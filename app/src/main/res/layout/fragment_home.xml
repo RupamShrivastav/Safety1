@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.HomeFragment">
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            app:trackColor="@color/app_light_color"
+            app:indicatorColor="@color/app_color"
+            android:indeterminate="true"
+            app:trackCornerRadius="@dimen/dimen_10dp"
+            app:indicatorInset="@dimen/dimen_10dp"
+            android:id="@+id/progressBar"
+            android:layout_height="match_parent"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:id="@+id/mainContent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/mapIcon"
+                android:layout_width="56dp"
+                android:layout_height="40dp"
+                android:layout_alignBottom="@+id/textFam"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/ic_location" />
+
+            <TextView
+                android:id="@+id/textFam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/poppins_semi_bold"
+                android:gravity="center_horizontal"
+                android:text="@string/home"
+                android:textColor="@color/black"
+                android:textSize="24sp" />
+
+            <ImageView
+                android:id="@+id/dotIcon"
+                android:layout_width="56dp"
+                android:layout_height="40dp"
+                android:layout_alignTop="@+id/textFam"
+                android:layout_alignBottom="@+id/textFam"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_horz_dots" />
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvHome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/cvHomeHorz"
+                android:layout_below="@+id/textFam"
+                android:layout_marginTop="-12dp"
+                android:layout_marginBottom="20dp"
+                tools:listitem="@layout/model" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cvHomeHorz"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="@dimen/dimen_8dp"
+                android:layout_marginTop="@dimen/dimen_4dp"
+                android:layout_marginBottom="@dimen/dimen_4dp"
+                app:cardElevation="@dimen/dimen_8dp"
+                android:backgroundTint="#BED8D4"
+                android:layout_alignParentBottom="true">
+
+            </com.google.android.material.card.MaterialCardView>
+        </RelativeLayout>
+
+    </FrameLayout>
+</layout>

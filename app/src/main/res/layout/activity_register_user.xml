@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@drawable/bg_gradient"
+    android:layout_height="match_parent"
+    tools:context=".RegisterUserActivity">
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        app:trackColor="@color/app_light_color"
+        app:indicatorColor="@color/app_color"
+        android:indeterminate="true"
+        app:trackCornerRadius="@dimen/dimen_10dp"
+        app:indicatorInset="@dimen/dimen_10dp"
+        android:id="@+id/progressBar"
+        android:layout_height="match_parent"/>
+
+    <LinearLayout
+        android:id="@+id/mainContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/cvImage"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_8dp"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:layout_width="@dimen/dimen_150dp"
+            android:layout_gravity="center"
+            android:padding="@dimen/dimen_4dp"
+            android:layout_height="@dimen/dimen_150dp"
+            android:src="@drawable/app_image_circle"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:fontFamily="@font/poppins_semi_bold"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="@dimen/dimen_28sp" />
+
+    </LinearLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/registrationCV"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/dimen_8dp"
+        android:background="#CAC6C6"
+        android:elevation="@dimen/dimen_32dp"
+        app:cardCornerRadius="@dimen/dimen_16dp">
+
+        <LinearLayout
+            android:id="@+id/nepLL"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="visible"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimen_8dp"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="center_horizontal"
+                android:text="Register Yourself on Safety"
+                android:textColor="@color/cardview_dark_background"
+                android:textSize="@dimen/dimen_20sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilName"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_margin="@dimen/dimen_8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Full Name"
+                app:boxCornerRadiusTopEnd="@dimen/text_input_layout_corner"
+                app:boxCornerRadiusTopStart="@dimen/text_input_layout_corner"
+                app:boxStrokeColor="@color/app_light_color"
+                app:cursorColor="@color/app_light_color"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:scrollHorizontally="true"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilemail"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_margin="@dimen/dimen_8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:boxCornerRadiusTopEnd="@dimen/text_input_layout_corner"
+                app:boxCornerRadiusTopStart="@dimen/text_input_layout_corner"
+                app:boxStrokeColor="@color/app_light_color"
+                app:cursorColor="@color/app_light_color"
+                android:hint="Email">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:singleLine="true"
+                    android:fontFamily="@font/poppins_regular"
+                    android:scrollHorizontally="true"
+                    android:textSize="14sp"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilpassword"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_margin="@dimen/dimen_8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                app:boxCornerRadiusTopEnd="@dimen/text_input_layout_corner"
+                app:boxCornerRadiusTopStart="@dimen/text_input_layout_corner"
+                app:boxStrokeColor="@color/app_light_color"
+                app:cursorColor="@color/app_light_color"
+                app:passwordToggleTint="@color/app_color"
+                app:endIconMode="password_toggle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:inputType="textPassword"
+                    android:fontFamily="@font/poppins_regular"
+                    android:scrollHorizontally="true"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/nextBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="54dp"
+                android:paddingVertical="@dimen/dimen_10dp"
+                android:src="@drawable/baseline_navigate_next_24"
+                app:rippleColor="@color/app_light_color"
+                android:layout_marginTop="36dp"
+                app:tint="@color/white"
+                android:layout_marginBottom="@dimen/dimen_10dp"
+                android:layout_gravity="center_horizontal"
+                android:backgroundTint="@color/app_color" />
+
+            <TextView
+                android:id="@+id/tV_alreadyReg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimen_8dp"
+                android:text="Already Registered? Login"
+                android:gravity="center_horizontal"
+                android:fontFamily="@font/poppins_extra_light_italic"
+                android:clickable="true"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/numberLL"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dimen_8dp"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="center_horizontal"
+                android:text="Register Yourself on Safety"
+                android:textColor="@color/cardview_dark_background"
+                android:textSize="@dimen/dimen_20sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/phoneNumber"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_margin="@dimen/dimen_8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Your Phone Number"
+                app:boxCornerRadiusTopEnd="@dimen/text_input_layout_corner"
+                app:boxCornerRadiusTopStart="@dimen/text_input_layout_corner"
+                app:boxStrokeColor="@color/app_light_color"
+                app:cursorColor="@color/app_light_color"
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:singleLine="true"
+                    android:textSize="14sp"
+                    android:inputType="number"
+                    android:fontFamily="@font/poppins_regular"
+                    android:scrollHorizontally="true"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_margin="@dimen/dimen_8dp"
+                android:layout_width="match_parent"
+                android:descendantFocusability="blocksDescendants"
+                android:layout_height="wrap_content"
+                app:boxCornerRadiusTopEnd="@dimen/text_input_layout_corner"
+                app:boxCornerRadiusTopStart="@dimen/text_input_layout_corner"
+                app:boxStrokeColor="@color/app_light_color"
+                app:cursorColor="@color/app_light_color"
+                android:hint="Trusted Contact Number"
+                android:clickable="true"
+                android:focusable="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/trustedContactNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:singleLine="true"
+                    android:fontFamily="@font/poppins_regular"
+                    android:textSize="14sp"
+                    android:scrollHorizontally="true"
+                    android:editable="false"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:cursorVisible="false"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilOrganization"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                android:layout_margin="@dimen/dimen_8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                app:boxCornerRadiusTopEnd="@dimen/text_input_layout_corner"
+                app:boxCornerRadiusTopStart="@dimen/text_input_layout_corner"
+                app:boxStrokeColor="@color/app_light_color"
+                app:cursorColor="@color/app_light_color"
+                android:hint="Organization"
+
+                app:endIconMode="clear_text">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:scrollHorizontally="true"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/RegisterBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:paddingHorizontal="54dp"
+                android:textSize="@dimen/dimen_14sp"
+                android:paddingVertical="@dimen/dimen_10dp"
+                android:shadowColor="@color/black"
+                app:cornerRadius="14dp"
+                android:layout_marginTop="36dp"
+                android:fontFamily="@font/poppins_regular"
+                android:layout_gravity="center_horizontal"
+                android:backgroundTint="@color/app_color"
+                android:text="Register"/>
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+</FrameLayout>
