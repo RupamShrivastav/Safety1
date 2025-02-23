@@ -95,8 +95,8 @@ class RegisterUserActivity : AppCompatActivity() {
                     organizationID = (100..1000).random().toString(),
                     phoneNumber = phoneNumber,
                     trustedContactID = (100..1000).random().toString(),
-                    trustedContactNumber = name,
-                    trustedContactName = phoneNum
+                    trustedContactNumber = phoneNum,
+                    trustedContactName = name
                 )
                 retrofit.registerNewUser(newUser)
                     .enqueue(object : Callback<NewUserCreatedResponse>{
