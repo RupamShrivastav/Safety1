@@ -1,6 +1,7 @@
-package com.example.safety
+package com.example.safety.application
 
 import android.app.Application
+import com.example.safety.BuildConfig
 import com.mappls.sdk.maps.Mappls
 import com.mappls.sdk.services.account.MapplsAccountManager
 

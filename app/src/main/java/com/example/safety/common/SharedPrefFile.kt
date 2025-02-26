@@ -1,7 +1,8 @@
-package com.example.safety
+package com.example.safety.common
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import com.example.safety.models.UserModelItem
 import com.example.safety.models.UsersListModel
 import com.google.gson.Gson
@@ -15,6 +16,11 @@ object SharedPrefFile {
 
     fun init(context : Context){
         preferences = context.getSharedPreferences(NAME, Context.MODE_PRIVATE)
+    }
+
+    fun clearAllData(){
+        Log.d(Constants.TAG,"All data cleared !!!")
+        preferences.edit().clear().apply()
     }
 
     fun putLoggedInfo(key: String, value: Boolean){

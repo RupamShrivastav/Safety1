@@ -1,4 +1,4 @@
-package com.example.safety
+package com.example.safety.fragments
 
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -15,13 +15,16 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.safety.R
+import com.example.safety.models.Users
+import com.example.safety.common.Constants
+import com.example.safety.common.SharedPrefFile
 import com.example.safety.databinding.FragmentMapsBinding
 import com.example.safety.models.LocationMarkerModel
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.mappls.sdk.maps.Mappls
 import com.mappls.sdk.maps.MapplsMap
 import com.mappls.sdk.maps.OnMapReadyCallback
 import com.mappls.sdk.maps.SupportMapFragment

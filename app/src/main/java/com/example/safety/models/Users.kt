@@ -1,4 +1,4 @@
-package com.example.safety
+package com.example.safety.models
 
 
 data class Users(

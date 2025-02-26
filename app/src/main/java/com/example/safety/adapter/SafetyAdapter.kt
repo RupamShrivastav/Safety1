@@ -1,4 +1,4 @@
-package com.example.safety
+package com.example.safety.adapter
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -8,9 +8,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.example.safety.R
+import com.example.safety.common.Constants
 import com.example.safety.databinding.ModelBinding
+import com.example.safety.fragments.MapplsMapFragment
+import com.example.safety.models.Users
 import com.example.safety.models.UsersListModel
-import com.example.safety.ui.UserLocationFragment
 import com.google.firebase.firestore.FirebaseFirestore
 
 class SafetyAdapter(private val memberList: UsersListModel) :

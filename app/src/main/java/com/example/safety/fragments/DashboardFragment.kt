@@ -1,4 +1,4 @@
-package com.example.safety.ui
+package com.example.safety.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -22,14 +22,5 @@ class DashboardFragment : Fragment() {
 
         binding= FragmentDashboardBinding.inflate(inflater,container,false)
         return binding.root
-    }
-
-
-
-    companion object {
-
-        @JvmStatic
-        fun newInstance() = DashboardFragment()
-
     }
 }

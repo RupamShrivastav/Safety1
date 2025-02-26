@@ -18,31 +18,32 @@
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".SafetyMainApplication"
+        android:name=".application.SafetyMainApplication"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Safety"
         tools:targetApi="31">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".activity.MainActivity"
             android:windowSoftInputMode="adjustResize"
             android:exported="false"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity"/>
 
-        <activity android:name=".RegisterUserActivity"
+        <activity android:name=".activity.RegisterUserActivity"
             android:windowSoftInputMode="adjustPan"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity"
             android:exported="false"/>
 
-        <activity android:name=".LoginUserActivity"
+        <activity android:name=".activity.LoginUserActivity"
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi,LockedOrientationActivity"
             android:exported="false"/>
 
         <activity android:name=".SplashScreen"
             android:screenOrientation="portrait"
+            android:theme="@style/SplashScreen_bg"
             tools:ignore="DiscouragedApi,LockedOrientationActivity"
             android:exported="true">
             <intent-filter>

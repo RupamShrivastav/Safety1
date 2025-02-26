@@ -1,6 +1,4 @@
-package com.example.safety
-
-import com.google.firebase.firestore.DocumentSnapshot
+package com.example.safety.models
 
 data class Model(
     val name: String,
@@ -9,6 +7,4 @@ data class Model(
     val lat : String,
     val long: String,
     val connectionInfo: String
-){
-    constructor(): this(" ","",0,"","","")
-}
+)

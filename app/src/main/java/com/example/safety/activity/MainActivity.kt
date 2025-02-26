@@ -1,6 +1,5 @@
-package com.example.safety.ui
+package com.example.safety.activity
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,19 +9,20 @@ import android.os.BatteryManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
-import android.provider.MediaStore.ACTION_IMAGE_CAPTURE
 import android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
-import com.example.safety.Constants
-import com.example.safety.MapplsMapFragment
+import com.example.safety.common.Constants
 import com.example.safety.R
-import com.example.safety.SharedPrefFile
+import com.example.safety.common.SharedPrefFile
 import com.example.safety.databinding.ActivityMainBinding
+import com.example.safety.fragments.GuardFragment
+import com.example.safety.fragments.HomeFragment
+import com.example.safety.fragments.MapplsMapFragment
+import com.example.safety.fragments.ProfileFragment
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
@@ -86,7 +86,9 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.btm_dashboard -> {
                     val tranc = supportFragmentManager.beginTransaction()
-                    tranc.replace(R.id.container, MapplsMapFragment.newInstance(null,null, null,true))
+                    tranc.replace(R.id.container,
+                        MapplsMapFragment.newInstance(null, null, null, true)
+                    )
                         .addToBackStack(null)
                         .commit()
 //                    binding.bottomNav.menu.getItem(2).isChecked = true
@@ -131,41 +133,42 @@ class MainActivity : AppCompatActivity() {
                     Log.d("LocationData", "Received location update")
 
                     for (location in locationResult.locations) {
-                        Log.d("FirestoreUpdate", "Processing location: ${location.latitude}, ${location.longitude}")
+                        Log.d(
+                            "FirestoreUpdate",
+                            "Processing location: ${location.latitude}, ${location.longitude}"
+                        )
 
                         val db = FirebaseFirestore.getInstance()
                         val sharedPref = SharedPrefFile
                         sharedPref.init(context = context)
-                        val userData = sharedPref.getUserData(Constants.SP_USERDATA)!!
-                        val mail = userData.email
+                        val userData = sharedPref.getUserData(Constants.SP_USERDATA)
 
-                        Log.d("FirestoreUpdate", "User email: $mail")
+                        userData?.let {
+                            val mail = userData.email
+                            Log.d("FirestoreUpdate", "User email: $mail")
 
-                        if (mail.isNullOrEmpty()) {
-                            Log.e("FirestoreUpdate", "Email is null or empty")
-                            return
+
+                            val data = hashMapOf(
+                                "lat" to location.latitude.toString(),
+                                "long" to location.longitude.toString(),
+                                "connectionInfo" to networkConnected(),
+                                "batPer" to batteryPercentage(),
+                                "name" to userData.fullName,
+                                "phoneNumber" to userData.phoneNumber
+                            )
+
+                            Log.d("FirestoreUpdate", "Attempting to update with data: $data")
+
+                            db.collection(Constants.FIRESTORE_COLLECTION)
+                                .document(mail)
+                                .set(data, SetOptions.merge())
+                                .addOnSuccessListener {
+                                    Log.d("FirestoreUpdate", "Successfully updated location")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.e("FirestoreUpdate", "Failed to update location", e)
+                                }
                         }
-
-                        val data = hashMapOf(
-                            "lat" to location.latitude.toString(),
-                            "long" to location.longitude.toString(),
-                            "connectionInfo" to networkConnected(),
-                            "batPer" to batteryPercentage(),
-                            "name" to userData.fullName,
-                            "phoneNumber" to userData.phoneNumber
-                        )
-
-                        Log.d("FirestoreUpdate", "Attempting to update with data: $data")
-
-                        db.collection(Constants.FIRESTORE_COLLECTION)
-                            .document(mail)
-                            .set(data, SetOptions.merge())
-                            .addOnSuccessListener {
-                                Log.d("FirestoreUpdate", "Successfully updated location")
-                            }
-                            .addOnFailureListener { e ->
-                                Log.e("FirestoreUpdate", "Failed to update location", e)
-                            }
                     }
                 }
             },

@@ -1,4 +1,4 @@
-package com.example.safety
+package com.example.safety.activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -8,10 +8,11 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import com.example.safety.api.RetrofitInstance
+import com.example.safety.common.Constants
+import com.example.safety.common.SharedPrefFile
 import com.example.safety.databinding.ActivityLoginUserBinding
 import com.example.safety.models.LoginInfoModel
 import com.example.safety.models.VerifiedUserModel
-import com.example.safety.ui.MainActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -55,17 +56,30 @@ class LoginUserActivity : AppCompatActivity() {
                             response: Response<VerifiedUserModel>,
                         ) {
                             Log.d("Rupam $TAG", "Response: ${response.body()?.userData}")
-                            sharedpref.putLoggedInfo(Constants.SP_LOGGED_INFO,true)
-                            sharedpref.putUserData(Constants.SP_USERDATA,response.body()!!.userData)
-                            binding.progressBar.visibility = View.VISIBLE
-                            binding.mainContent.visibility = View.GONE
+                            when(response.body()?.status){
+                                "verified"-> {
+                                sharedpref.putLoggedInfo(Constants.SP_LOGGED_INFO, true)
+                                sharedpref.putUserData(
+                                    Constants.SP_USERDATA,
+                                    response.body()!!.userData
+                                )
+                                binding.progressBar.visibility = View.VISIBLE
+                                binding.mainContent.visibility = View.GONE
 
-                            binding.progressBar.postDelayed({
-                                binding.progressBar.visibility = View.GONE
-                                binding.mainContent.visibility = View.VISIBLE
-                            }, 1500)
-                            startActivity(Intent(baseContext,MainActivity::class.java))
+                                binding.progressBar.postDelayed({
+                                    binding.progressBar.visibility = View.GONE
+                                    binding.mainContent.visibility = View.VISIBLE
+                                }, 1500)
+                                startActivity(Intent(baseContext, MainActivity::class.java))
+                            }
+                                "password_wrong"->{
+                                    Toast.makeText(baseContext,"Wrong Password",Toast.LENGTH_SHORT).show()
+                                }
 
+                                "user_not_found"->{
+                                    Toast.makeText(baseContext,"No User Found, Recheck Email or Register as New User",Toast.LENGTH_SHORT).show()
+                                }
+                            }
                         }
 
                         override fun onFailure(call: Call<VerifiedUserModel>, t: Throwable) {

@@ -1,8 +1,7 @@
-package com.example.safety.ui
+package com.example.safety.fragments
 
 
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,16 +9,13 @@ import android.view.ViewGroup
 import android.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.safety.Constants
-import com.example.safety.MapplsMapFragment
+import com.example.safety.common.Constants
 import com.example.safety.R
-import com.example.safety.SafetyAdapter
-import com.example.safety.SharedPrefFile
+import com.example.safety.adapter.SafetyAdapter
+import com.example.safety.common.SharedPrefFile
 import com.example.safety.api.RetrofitInstance
 import com.example.safety.databinding.FragmentHomeBinding
 import com.example.safety.models.UsersListModel
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -57,7 +53,7 @@ class HomeFragment : Fragment() {
         sharedpref.init(requireContext())
         val userData = sharedpref.getUserData(Constants.SP_USERDATA)!!
 
-        Log.d("Rupam Home Fragment","Data $userData")
+        Log.d("@@@@@@@@ home","Data $userData")
 
         val retrofit = RetrofitInstance.initialize()
         val users = retrofit.getUsersByOrg(userData.organization)
@@ -80,40 +76,6 @@ class HomeFragment : Fragment() {
             }
 
         })
-
-//            db.collection("User Data")
-//                .get()
-//                .addOnSuccessListener { result ->
-//
-//                    val usersList = mutableListOf<Model>()
-//                    for (usersInfo in result.documents) {
-//                        val user = usersInfo.toObject(Users::class.java)
-//                        if (!result.isEmpty) {
-//                            val name = user?.fullName.orEmpty()
-//                            val latitude = user?.lat.orEmpty()
-//                            val longitude = user?.long.orEmpty()
-//                            val phoneNumber = user?.phoneNumber.orEmpty()
-//                            val batPer = user!!.batPer
-//                            val connectionInfo = user.connectionInfo.orEmpty()
-//
-//                            val model = Model(name,phoneNumber,batPer,latitude,longitude,connectionInfo)
-//                            usersList.add(model)
-//                        }
-//                        val adapter = safetyAdapter(usersList)
-//                        binding.rvHome.adapter = adapter
-//                        binding.rvHome.adapter?.notifyDataSetChanged()
-//                    }
-//
-//                }
-//                .addOnFailureListener { exception ->
-//                    Log.e("FireStoreData", "Error getting documents: ", exception)
-//                    Toast.makeText(
-//                        requireContext(),
-//                        "Error while retrieving data from firestore",
-//                        Toast.LENGTH_SHORT
-//                    ).show()
-//                }
-
 
         binding.mapIcon.setOnClickListener {
             requireActivity().supportFragmentManager

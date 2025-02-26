@@ -3,7 +3,10 @@ package com.example.safety
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.safety.ui.MainActivity
+import com.example.safety.activity.LoginUserActivity
+import com.example.safety.common.Constants
+import com.example.safety.common.SharedPrefFile
+import com.example.safety.activity.MainActivity
 
 class SplashScreen : AppCompatActivity() {
     

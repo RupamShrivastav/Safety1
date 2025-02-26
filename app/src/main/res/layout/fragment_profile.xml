@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:backgroundTint="@color/white"
     android:orientation="vertical"
-    tools:context=".ui.HomeFragment">
+    tools:context=".fragments.HomeFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,7 +57,7 @@
                     android:fontFamily="@font/poppins_semi_bold"
                     android:gravity="center"
                     android:paddingVertical="8dp"
-                    android:textSize="@dimen/dimen_18sp"
+                    android:textSize="16sp"
                     tools:text="@string/profile" />
 
                 <TextView
@@ -106,7 +106,7 @@
                         android:fontFamily="@font/poppins_regular"
                         android:padding="@dimen/dimen_8dp"
                         android:text="Invite Contacts"
-                        android:textSize="@dimen/dimen_18sp" />
+                        android:textSize="16sp" />
 
                     <ImageView
                         android:layout_width="wrap_content"
@@ -120,6 +120,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     app:cardElevation="@dimen/dimen_4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="24dp"
                     app:cardCornerRadius="@dimen/dimen_8dp">
 
                     <LinearLayout
@@ -131,7 +133,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="@dimen/dimen_4dp"
-                            android:text="Add Numbers"
+                            android:text="Add Number"
                             android:fontFamily="@font/poppins_semi_bold"/>
 
 
@@ -149,65 +151,50 @@
                                 android:orientation="vertical">
 
                                 <LinearLayout
-                                    android:id="@+id/sosNum"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:orientation="horizontal">
-
-                                    <ImageView
-                                        android:layout_width="36dp"
-                                        android:layout_height="42dp"
-                                        android:layout_weight="1"
-                                        android:padding="@dimen/dimen_4dp"
-                                        android:src="@drawable/sos" />
-
-                                    <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:layout_gravity="center_vertical"
-                                        android:layout_weight="8"
-                                        android:fontFamily="@font/poppins_regular"
-                                        android:padding="@dimen/dimen_8dp"
-                                        android:text="SOS"
-                                        android:textSize="@dimen/dimen_18sp"  />
-
-                                    <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="1"
-                                        android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
-
-
-                                </LinearLayout>
-
-                                <LinearLayout
                                     android:id="@+id/guardNum"
+                                    android:weightSum="5"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:orientation="horizontal">
 
 
                                     <ImageView
-                                        android:layout_width="36dp"
+                                        android:layout_width="0dp"
                                         android:layout_height="44dp"
-                                        android:layout_weight="1"
+                                        android:layout_weight=".5"
+                                        android:layout_gravity="center_vertical"
                                         android:padding="@dimen/dimen_4dp"
                                         android:src="@drawable/guards" />
 
                                     <TextView
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="9"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:layout_weight="2"
                                         android:fontFamily="@font/poppins_regular"
                                         android:padding="@dimen/dimen_8dp"
-                                        android:text="Guard"
-                                        android:textSize="@dimen/dimen_18sp"  />
+                                        android:layout_gravity="center_vertical"
+                                        android:text="Trusted Contact"
+                                        android:gravity="start"
+                                        android:textSize="16sp"  />
+
+                                    <TextView
+                                        android:id="@+id/trustedContactNameProfile"
+                                        android:layout_width="0dp"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/poppins_regular"
+                                        android:padding="@dimen/dimen_8dp"
+                                        android:textColor="@color/black"
+                                        android:layout_gravity="center_vertical"
+                                        android:gravity="end"
+                                        android:layout_weight="2"
+                                        tools:text="Trusted "
+                                        android:textSize="16sp"  />
 
                                     <ImageView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="match_parent"
-                                        android:layout_gravity="right"
-                                        android:layout_weight="1"
+                                        android:layout_width="0dp"
+                                        android:layout_height="24dp"
+                                        android:layout_gravity="center_vertical"
+                                        android:layout_weight=".5"
                                         android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
                                 </LinearLayout>
 
@@ -235,7 +222,7 @@
                         android:fontFamily="@font/poppins_regular"
                         android:padding="@dimen/dimen_8dp"
                         android:text="Sign Out"
-                        android:textSize="@dimen/dimen_18sp"  />
+                        android:textSize="16sp"  />
 
                     <ImageView
                         android:layout_width="wrap_content"

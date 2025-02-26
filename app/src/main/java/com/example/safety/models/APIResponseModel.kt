@@ -1,5 +1,5 @@
 package com.example.safety.models
 
-data class NewUserCreatedResponse (
+data class APIResponseModel (
     val message: String
 )

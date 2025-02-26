@@ -10,7 +10,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.HomeFragment">
+        tools:context=".fragments.HomeFragment">
 
         <com.google.android.material.progressindicator.CircularProgressIndicator
             android:layout_width="match_parent"

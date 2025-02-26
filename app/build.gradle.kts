@@ -71,16 +71,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     implementation (libs.mappls.android.sdk)
-
-    implementation (libs.androidx.lifecycle.livedata.ktx)
-    implementation (libs.androidx.lifecycle.viewmodel.ktx)
-    implementation (libs.kotlinx.coroutines.android)
-    implementation (libs.androidx.room.runtime)
-    ksp(libs.androidx.room.compiler)
-
-    implementation (libs.androidx.room.ktx)
-    testImplementation (libs.androidx.room.testing)
-
     implementation (libs.retrofit)
     implementation(libs.converter.gson)
 
