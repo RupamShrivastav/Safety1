@@ -19,117 +19,118 @@ import com.example.safety.R
 import com.example.safety.common.SharedPrefFile
 import com.example.safety.databinding.FragmentGuardBinding
 
+/**
+ * GuardFragment
+ */
 class GuardFragment : Fragment() {
 
-    lateinit var binding: FragmentGuardBinding
-    val sp = SharedPrefFile
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
+    private lateinit var binding: FragmentGuardBinding  // View binding instance
+    private val sharedPref = SharedPrefFile  // Shared Preferences instance for storing user data
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        // Inflate the layout for this fragment
+        // Inflate the layout using View Binding
         binding = FragmentGuardBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val sharedPref = SharedPrefFile
-        sharedPref.init(requireContext())
-        val numSOS = sharedPref.getUserData(Constants.SP_USERDATA)!!.trustedContactNumber
-        binding.cvSOS.setOnClickListener {
 
-            val dialog = Dialog(requireContext())
+        sharedPref.init(requireContext())  // Initialize SharedPreferences
 
-            dialog.setContentView(R.layout.sos_dialog_box)
-            dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        // Retrieve the trusted contact number from SharedPreferences
+        val numSOS = sharedPref.getUserData(Constants.SP_USERDATA)?.trustedContactNumber ?: "112"
 
-            dialog.show()
+        // Set up click listeners for **SOS Mode** and **Guard Mode**
+        binding.cvSOS.setOnClickListener { showSOSDialog(numSOS) }
+        binding.cvGuard.setOnClickListener { sendSafetyMessage(numSOS) }
+    }
 
-            dialog.findViewById<LinearLayout>(R.id.number100).setOnClickListener{
-                callNumber("100")
-            }
-
-            dialog.findViewById<LinearLayout>(R.id.number102).setOnClickListener{
-                callNumber("102")
-            }
-
-            dialog.findViewById<LinearLayout>(R.id.number112).setOnClickListener{
-                callNumber("112")
-            }
-
-            dialog.findViewById<LinearLayout>(R.id.number139).setOnClickListener{
-                callNumber("139")
-            }
-
-            dialog.findViewById<TextView>(R.id.trustedContName).text = sharedPref.getUserData(
-                Constants.SP_USERDATA)!!.trustedContactName
-            dialog.findViewById<LinearLayout>(R.id.trustedContact).setOnClickListener{
-                Log.d("TrustedContact",numSOS)
-                callNumber(numSOS)
-            }
+    /**
+     * Displays an **SOS emergency dialog** with options to call emergency numbers or a trusted contact.
+     */
+    private fun showSOSDialog(numSOS: String) {
+        val dialog = Dialog(requireContext()).apply {
+            setContentView(R.layout.sos_dialog_box)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            show()
         }
 
-        binding.cvGuard.setOnClickListener {
-            val msg = "I am safe for now"
+        // Click listeners for emergency numbers
+        dialog.findViewById<LinearLayout>(R.id.number100).setOnClickListener { callNumber("100") }  // Police
+        dialog.findViewById<LinearLayout>(R.id.number102).setOnClickListener { callNumber("102") }  // Ambulance
+        dialog.findViewById<LinearLayout>(R.id.number112).setOnClickListener { callNumber("112") }  // Emergency
+        dialog.findViewById<LinearLayout>(R.id.number139).setOnClickListener { callNumber("139") }  // Railway Helpline
 
-            val intent = Intent(Intent.ACTION_SENDTO)
-            intent.data = Uri.parse("smsto:$numSOS")
+        // Set trusted contact details in the dialog
+        dialog.findViewById<TextView>(R.id.trustedContName).text =
+            sharedPref.getUserData(Constants.SP_USERDATA)?.trustedContactName ?: "Unknown Contact"
 
-            intent.putExtra("sms_body",msg)
-
-            if (requireContext().packageManager.resolveActivity(intent, 0) != null) {
-                requireContext().startActivity(intent)
-            } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Install whatsapp",
-                    Toast.LENGTH_LONG
-                )
-                    .show()
-            }
+        // Call the trusted contact when clicked
+        dialog.findViewById<LinearLayout>(R.id.trustedContact).setOnClickListener {
+            Log.d("TrustedContact", "Calling $numSOS")
+            callNumber(numSOS)
         }
     }
 
+    /**
+     * Sends a predefined **safety message** ("I am safe for now") to the trusted contact.
+     * - Opens the default **SMS app** with the message pre-filled.
+     * - If SMS is unavailable, suggests installing a messaging app.
+     */
+    private fun sendSafetyMessage(numSOS: String) {
+        val msg = "I am safe for now"
 
+        val intent = Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("smsto:$numSOS")  // Set recipient
+            putExtra("sms_body", msg)  // Add message content
+        }
+
+        // Check if there's an available SMS app
+        if (requireContext().packageManager.resolveActivity(intent, 0) != null) {
+            startActivity(intent)
+        } else {
+            Toast.makeText(requireContext(), "Install WhatsApp or SMS app", Toast.LENGTH_LONG).show()
+        }
+    }
+
+    /**
+     * **Initiates a call** to the given phone number.
+     * - Uses **ACTION_DIAL** so the user can confirm before calling.
+     */
     private fun callNumber(number: String) {
-            val intent = Intent(Intent.ACTION_DIAL)
-        intent.data = Uri.parse("tel:${number.toLong()}")
+        val intent = Intent(Intent.ACTION_DIAL).apply {
+            data = Uri.parse("tel:$number")
+        }
         startActivity(intent)
     }
 
+    /**
+     * **Normalizes a phone number** by:
+     * - Removing spaces
+     * - Removing country codes (if applicable)
+     */
+    private fun normalizePhoneNumber(number: String?): String? {
+        var phoneNumber = number ?: return null
+        phoneNumber = phoneNumber.replace(" ", "")
+
+        // Remove country code if present
+        if (phoneNumber.length > 10 && phoneNumber.startsWith("+")) {
+            phoneNumber = phoneNumber.substring(3)
+        }
+
+        Log.d("Normalized Phone", phoneNumber)
+        return phoneNumber
+    }
+
+    /**
+     * **Factory method** to create a new instance of `GuardFragment`.
+     */
     companion object {
         @JvmStatic
         fun newInstance() = GuardFragment()
     }
-
-    private fun normalizePhoneNumber(number: String?): String? {
-        var phoneNumber = number ?: return null
-
-        phoneNumber = phoneNumber.replace(" ", "")
-        if(phoneNumber.length>10){
-            Log.d("@@@@@ 1","$phoneNumber ${phoneNumber.length}")
-            if(phoneNumber[0]=='+'){
-                Log.d("@@@@@@ 2","${phoneNumber}")
-                phoneNumber = phoneNumber.substring(3)
-            }
-        }
-        Log.d("@@@@@@ 3","${phoneNumber}")
-        return phoneNumber.toString()
-    }
 }
-
-
-
-
-
-
-
-
-
-

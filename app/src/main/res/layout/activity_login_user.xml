@@ -145,10 +145,7 @@
                     android:fontFamily="@font/poppins_extra_light_italic"
                     android:gravity="center_horizontal"
                     android:text="New User? Register" />
-
-
             </LinearLayout>
         </androidx.cardview.widget.CardView>
-
     </LinearLayout>
 </FrameLayout>

@@ -61,7 +61,7 @@
             android:id="@+id/nepLL"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible"
+            android:visibility="gone"
             android:orientation="vertical">
 
             <TextView
@@ -176,7 +176,7 @@
             android:id="@+id/numberLL"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
+            android:visibility="visible"
             android:orientation="vertical">
 
             <TextView
@@ -235,6 +235,7 @@
                     android:singleLine="true"
                     android:fontFamily="@font/poppins_regular"
                     android:textSize="14sp"
+                    android:drawableEnd="@drawable/ic_contact_picker"
                     android:scrollHorizontally="true"
                     android:editable="false"
                     android:clickable="true"

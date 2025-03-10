@@ -25,39 +25,46 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class RegisterUserActivity : AppCompatActivity() {
 
-    private val TAG = "Register User"
-    private lateinit var binding: ActivityRegisterUserBinding
-    private lateinit var pickContactLauncher: ActivityResultLauncher<Intent>
-    var phoneNum = ""
-    var name = ""
+/**
+ * RegisterUserActivity
+ *
+ * This activity allows new users to sign up for an account.
+ * It collects user details and stores them in the database.
+ */
+class RegisterUserActivity : AppCompatActivity() {
+    private val TAG = "Register User" // Tag for logging purposes
+    private lateinit var binding: ActivityRegisterUserBinding // View binding for UI elements
+    private lateinit var pickContactLauncher: ActivityResultLauncher<Intent> // Launcher for picking contacts
+    var phoneNum = "" // Stores the selected contact's phone number
+    var name = "" // Stores the selected contact's name
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val fdb = FirebaseFirestore.getInstance()
 
-        val retrofit = RetrofitInstance.initialize()
-        val sharedpref = SharedPrefFile
-        sharedpref.init(this)
+        val fdb = FirebaseFirestore.getInstance() // Firestore database instance
+        val retrofit = RetrofitInstance.initialize() // Retrofit instance for API calls
+        val sharedpref = SharedPrefFile // Shared preferences instance
+        sharedpref.init(this) // Initialize shared preferences
         binding = ActivityRegisterUserBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(binding.root) // Set the content view using binding
 
-
+        // Redirects user to login activity if already registered
         binding.tVAlreadyReg.setOnClickListener {
             val intent = Intent(this, LoginUserActivity::class.java)
             startActivity(intent)
             finish()
         }
 
-        pickContactLauncher =
-            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-                if (result.resultCode == Activity.RESULT_OK) {
-                    val data: Intent? = result.data
-                    handleContactResult(data)
-                }
+        // Initializes the contact picker launcher
+        pickContactLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val data: Intent? = result.data
+                handleContactResult(data) // Handle contact selection
             }
+        }
 
+        // Moves to phone number entry step in the registration process
         binding.apply {
             nextBtn.setOnClickListener {
                 nepLL.visibility = View.GONE
@@ -65,10 +72,12 @@ class RegisterUserActivity : AppCompatActivity() {
             }
         }
 
+        // Opens the contact picker when selecting a trusted contact
         binding.trustedContactNumber.setOnClickListener {
             pickContact()
         }
 
+        // Handles user registration process when "Register" button is clicked
         binding.RegisterBtn.setOnClickListener {
             val fullname = binding.tilName.editText?.text.toString()
             val phoneNumber = binding.phoneNumber.editText?.text.toString()
@@ -76,12 +85,14 @@ class RegisterUserActivity : AppCompatActivity() {
             val email = binding.tilemail.editText?.text.toString()
             val password = binding.tilpassword.editText?.text.toString()
 
+            // Ensures all fields are filled before proceeding
             if (email.isBlank() || password.isBlank() || organization.isBlank() || fullname.isBlank()) {
                 Toast.makeText(this, "Enter all the details", Toast.LENGTH_SHORT).show()
             } else {
                 binding.progressBar.visibility = View.VISIBLE
                 binding.mainContent.visibility = View.GONE
 
+                // Creating a new user object
                 val newUser = UserModelItem(
                     organization = organization,
                     email = email,
@@ -95,92 +106,72 @@ class RegisterUserActivity : AppCompatActivity() {
                     trustedContactName = name
                 )
 
+                // Sending the user data to the backend API for registration
                 retrofit.registerNewUser(newUser)
                     .enqueue(object : Callback<APIResponseModel> {
                         override fun onResponse(
                             call: Call<APIResponseModel>,
                             response: Response<APIResponseModel>,
                         ) {
-//                            binding.progressBar.visibility = View.VISIBLE
-//                            binding.mainContent.visibility = View.GONE
-//                            binding.progressBar.postDelayed({
-//                                binding.progressBar.visibility = View.GONE
-//                                binding.mainContent.visibility = View.VISIBLE
-//                            }, 1500)
-                            Log.d("Rupam $TAG", "Response: ${response.body()}")
-                            when (response.code()) {
-                                 400-> {
-                                    Toast.makeText(baseContext, "Invalid email", Toast.LENGTH_SHORT).show()
+                            Log.d("RegisterUser", "Response: ${response.body()}")
 
+                            when (response.code()) {
+                                400 -> { // Invalid email case
+                                    Toast.makeText(baseContext, "Invalid email", Toast.LENGTH_SHORT).show()
                                     startActivity(Intent(baseContext, RegisterUserActivity::class.java))
                                     finish()
                                 }
-
-                                409 -> {
-                                    Toast.makeText(
-                                        baseContext,
-                                        "Email Already exists",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-
-                                    startActivity(
-                                        Intent(
-                                            baseContext,
-                                            LoginUserActivity::class.java
-                                        )
-                                    )
+                                409 -> { // Email already exists
+                                    Toast.makeText(baseContext, "Email Already exists", Toast.LENGTH_SHORT).show()
+                                    startActivity(Intent(baseContext, LoginUserActivity::class.java))
                                     finish()
                                 }
-
-                                201 -> {
+                                201 -> { // Successfully registered
                                     sharedpref.putLoggedInfo(Constants.SP_LOGGED_INFO, true)
                                     sharedpref.putUserData(Constants.SP_USERDATA, newUser)
-                                    Log.d(
-                                        Constants.TAG,
-                                        " Register User Data : ${
-                                            sharedpref.getUserData(Constants.SP_USERDATA).toString()
-                                        }"
-                                    )
+
                                     val fdbData = hashMapOf(
-                                        "name" to fullname,
-                                        "batteryPer" to "100",
-                                        "connectionInfo" to "Wifi",
-                                        "lat" to "32.232232",
-                                        "long" to "32.232232",
-                                        "phoneNumber" to "12111",
+                                        "lat" to "0.0",
+                                        "long" to "0.0",
+                                        "connectionInfo" to "null",
+                                        "batPer" to 0,
+                                        "name" to "name",
+                                        "phoneNumber" to "1111111"
                                     )
 
+                                    // Save user location info in Firestore
                                     fdb.collection(Constants.FIRESTORE_COLLECTION).document(email)
                                         .set(fdbData)
                                         .addOnSuccessListener {
-                                            Log.d("Rupam Register", "New firebase entry :$fdbData")
+                                            Log.d("RegisterUser", "New Firebase entry: $fdbData")
                                         }
                                         .addOnFailureListener {
-                                            Log.d("Rupam Register", "Error Firebase${it.message}")
+                                            Log.d("RegisterUser", "Error in Firebase: ${it.message}")
                                         }
+
                                     binding.progressBar.visibility = View.GONE
                                     binding.mainContent.visibility = View.VISIBLE
                                     startActivity(Intent(baseContext, MainActivity::class.java))
                                 }
-                                else->{
-                                    Log.d("Rupam @@@@","Error ")
+                                else -> {
+                                    Log.d("RegisterUser", "Error in response")
                                 }
-
                             }
                         }
 
                         override fun onFailure(call: Call<APIResponseModel>, t: Throwable) {
-                            Log.d("Rupam $TAG", "Response: ${t.message}")
+                            Log.d("RegisterUser", "API Call Failed: ${t.message}")
                         }
                     })
-
             }
-
         }
     }
 
-    private val READ_CONTACTS_PERMISSION_REQUEST = 1
+    private val READ_CONTACTS_PERMISSION_REQUEST = 1 // Permission request code for reading contacts
 
+    /**
+     * Initiates contact picking by checking permissions
+     */
     private fun pickContact() {
         if (ContextCompat.checkSelfPermission(
                 this,
@@ -193,11 +184,13 @@ class RegisterUserActivity : AppCompatActivity() {
                 READ_CONTACTS_PERMISSION_REQUEST
             )
         } else {
-            // Permission already granted, proceed with contact picking
             launchContactPicker()
         }
     }
 
+    /**
+     * Handles permission request results for reading contacts
+     */
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -206,24 +199,24 @@ class RegisterUserActivity : AppCompatActivity() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == READ_CONTACTS_PERMISSION_REQUEST) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission granted, proceed with contact picking
                 launchContactPicker()
             } else {
-                // Permission denied, handle accordingly (e.g., show a message)
-                Toast.makeText(
-                    this,
-                    "Permission denied. Cannot access contacts.",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(this, "Permission denied. Cannot access contacts.", Toast.LENGTH_SHORT).show()
             }
         }
     }
 
+    /**
+     * Launches the contact picker
+     */
     private fun launchContactPicker() {
         val intent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
         pickContactLauncher.launch(intent)
     }
 
+    /**
+     * Handles the result of the contact picker
+     */
     private fun handleContactResult(data: Intent?) {
         if (data != null) {
             val contactUri: Uri = data.data!!
@@ -231,11 +224,9 @@ class RegisterUserActivity : AppCompatActivity() {
             cursor?.use {
                 if (it.moveToFirst()) {
                     val id = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
-                    name =
-                        it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME))
+                    name = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME))
 
-                    val hasPhone =
-                        it.getInt(it.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER))
+                    val hasPhone = it.getInt(it.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER))
                     if (hasPhone > 0) {
                         val phoneCursor = contentResolver.query(
                             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -246,32 +237,27 @@ class RegisterUserActivity : AppCompatActivity() {
                         )
                         phoneCursor?.use { phone ->
                             if (phone.moveToFirst()) {
-                                phoneNum =
-                                    phone.getString(phone.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
-                                binding.trustedContactNumber.setText("$name -$phoneNum")
+                                phoneNum = phone.getString(phone.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                                binding.trustedContactNumber.setText("$name - $phoneNum")
                             }
                         }
                     } else {
-                        Toast.makeText(this, "Contact has no phone number", Toast.LENGTH_SHORT)
-                            .show()
+                        Toast.makeText(this, "Contact has no phone number", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
         }
     }
 
+    /**
+     * Normalizes the phone number by removing extra characters
+     */
     private fun normalizePhoneNumber(number: String?): String? {
         var phoneNumber = number ?: return null
-
         phoneNumber = phoneNumber.replace(" ", "")
-        if (phoneNumber.length > 10) {
-            Log.d("@@@@@ 1", "$phoneNumber ${phoneNumber.length}")
-            if (phoneNumber[0] == '+') {
-                Log.d("@@@@@@ 2", "${phoneNumber}")
-                phoneNumber = phoneNumber.substring(3)
-            }
+        if (phoneNumber.length > 10 && phoneNumber[0] == '+') {
+            phoneNumber = phoneNumber.substring(3)
         }
-        Log.d("@@@@@@ 3", "${phoneNumber}")
-        return phoneNumber.toString()
+        return phoneNumber
     }
 }

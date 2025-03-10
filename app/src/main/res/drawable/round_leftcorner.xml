@@ -1,9 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    This XML defines a rectangle shape with a solid background color.
+    It also has rounded corners on the left side (top-left & bottom-left).
+-->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
 
+    <!--
+        Defines the solid fill color of the rectangle.
+        The color is fetched from the app's color resources.
+    -->
     <solid android:color="@color/light_green"/>
-    <corners android:bottomLeftRadius="@dimen/dimen_8dp"
-        android:topLeftRadius="@dimen/dimen_8dp"/>
+
+    <!--
+        Defines rounded corners for the shape.
+        Here, only the top-left and bottom-left corners are rounded.
+        The radius values are fetched from the app's dimensions resources.
+    -->
+    <corners
+        android:topLeftRadius="@dimen/dimen_8dp"
+        android:bottomLeftRadius="@dimen/dimen_8dp"/>
 
 </shape>

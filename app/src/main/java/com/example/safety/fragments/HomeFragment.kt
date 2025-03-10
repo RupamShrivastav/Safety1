@@ -20,14 +20,18 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+/**
+ * HomeFragment
+ */
 class HomeFragment : Fragment() {
 
-    lateinit var binding: FragmentHomeBinding
+    lateinit var binding: FragmentHomeBinding  // View binding instance for accessing UI components
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // Inflate the layout using View Binding
         binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -35,48 +39,63 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Initially show progress bar and hide main content
         binding.progressBar.visibility = View.VISIBLE
         binding.mainContent.visibility = View.GONE
 
+        // Simulate loading time (1.5s) before displaying main content
         binding.progressBar.postDelayed({
             binding.progressBar.visibility = View.GONE
             binding.mainContent.visibility = View.VISIBLE
         }, 1500)
 
+        Log.v("FetchContacts", "1") // Debugging log
 
-        Log.v("FetchContacts", "1")
-
+        // Setup RecyclerView with a LinearLayoutManager
         binding.rvHome.layoutManager = LinearLayoutManager(requireContext())
-        Log.v("FetchContacts", "2")
 
-        val sharedpref = SharedPrefFile
-        sharedpref.init(requireContext())
-        val userData = sharedpref.getUserData(Constants.SP_USERDATA)!!
+        Log.v("FetchContacts", "2") // Debugging log
 
-        Log.d("@@@@@@@@ home","Data $userData")
+        // Initialize SharedPreferences
+        val sharedPref = SharedPrefFile
+        sharedPref.init(requireContext())
 
+        // Retrieve the logged-in user data from SharedPreferences
+        val userData = sharedPref.getUserData(Constants.SP_USERDATA)!!
+
+        Log.d("@@@@@@@@ home", "Data $userData") // Debugging log
+
+        // Initialize Retrofit instance and fetch users of the same organization
         val retrofit = RetrofitInstance.initialize()
         val users = retrofit.getUsersByOrg(userData.organization)
-        Thread.sleep(3000)
-        users.enqueue(object : Callback<UsersListModel>{
+
+        // Avoid using Thread.sleep(3000), as it blocks the UI thread and can cause ANR (Application Not Responding)
+        users.enqueue(object : Callback<UsersListModel> {
             override fun onResponse(
                 call: Call<UsersListModel>,
-                response: Response<UsersListModel>,
+                response: Response<UsersListModel>
             ) {
-                Log.d(Constants.TAG,"AllUsersByOrg ${response.body()}")
-                sharedpref.putAllUsersByOrg(Constants.SP_ALL_USERS_BY_ORG, response.body()!!)
-                val adapter = SafetyAdapter(response.body()!!)
-                binding.rvHome.adapter = adapter
-                binding.rvHome.adapter?.notifyDataSetChanged()
+                if (response.isSuccessful) {
+                    Log.d(Constants.TAG, "AllUsersByOrg ${response.body()}")
 
+                    // Save users list to SharedPreferences
+                    sharedPref.putAllUsersByOrg(Constants.SP_ALL_USERS_BY_ORG, response.body()!!)
+
+                    // Set up RecyclerView adapter with retrieved user list
+                    val adapter = SafetyAdapter(response.body()!!)
+                    binding.rvHome.adapter = adapter
+                    binding.rvHome.adapter?.notifyDataSetChanged()
+                } else {
+                    Log.e(Constants.TAG, "Error fetching users: ${response.errorBody()?.string()}")
+                }
             }
 
             override fun onFailure(call: Call<UsersListModel>, t: Throwable) {
-                Log.d(Constants.TAG,"${t.message}")
+                Log.e(Constants.TAG, "API Call Failed: ${t.message}")
             }
-
         })
 
+        // Map icon click listener: Navigate to the Map fragment
         binding.mapIcon.setOnClickListener {
             requireActivity().supportFragmentManager
                 .beginTransaction()
@@ -85,15 +104,16 @@ class HomeFragment : Fragment() {
                 .commit()
         }
 
-
+        // Dots menu icon click listener: Show popup menu with options
         binding.dotIcon.setOnClickListener {
-            val popMenu = PopupMenu(it.context,it)
-            popMenu.menuInflater.inflate(R.menu.home_menu,popMenu.menu)
+            val popMenu = PopupMenu(it.context, it)
+            popMenu.menuInflater.inflate(R.menu.home_menu, popMenu.menu)
 
-            popMenu.setOnMenuItemClickListener {
-
-                when(it.itemId){
-                    R.id.settings ->{
+            // Handle menu item clicks
+            popMenu.setOnMenuItemClickListener { menuItem ->
+                when (menuItem.itemId) {
+                    R.id.settings -> {
+                        // Navigate to ProfileFragment (Settings screen)
                         requireActivity().supportFragmentManager
                             .beginTransaction()
                             .replace(R.id.container, ProfileFragment())
@@ -101,13 +121,12 @@ class HomeFragment : Fragment() {
                             .commit()
                         true
                     }
-                    else -> {false}
+                    else -> false
                 }
             }
             popMenu.show()
         }
     }
-
 
     companion object {
         @JvmStatic
