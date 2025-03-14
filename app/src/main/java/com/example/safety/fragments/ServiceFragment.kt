@@ -22,7 +22,7 @@ import com.example.safety.databinding.FragmentGuardBinding
 /**
  * GuardFragment
  */
-class GuardFragment : Fragment() {
+class ServiceFragment : Fragment() {
 
     private lateinit var binding: FragmentGuardBinding  // View binding instance
     private val sharedPref = SharedPrefFile  // Shared Preferences instance for storing user data
@@ -131,6 +131,6 @@ class GuardFragment : Fragment() {
      */
     companion object {
         @JvmStatic
-        fun newInstance() = GuardFragment()
+        fun newInstance() = ServiceFragment()
     }
 }

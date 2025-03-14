@@ -1,11 +1,13 @@
 package com.example.safety.activity
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.provider.ContactsContract
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,13 +17,13 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.safety.api.RetrofitInstance
 import com.example.safety.common.Constants
 import com.example.safety.common.SharedPrefFile
 import com.example.safety.databinding.ActivityRegisterUserBinding
-import com.example.safety.models.APIResponseModel
 import com.example.safety.models.NewRegistrationResponse
 import com.example.safety.models.UserModelItem
 import com.google.firebase.firestore.FirebaseFirestore
@@ -58,11 +60,27 @@ class RegisterUserActivity : AppCompatActivity() {
 
         val editTexts = listOf(binding.pin1, binding.pin2, binding.pin3, binding.pin4, binding.pin5)
 
+        // Function to check if first box is filled
+        fun isFirstBoxFilled() = editTexts[0].text.isNotEmpty()
+
+        // Function to provide slight vibration on delete (Optional)
+        fun vibrate(context: Context) {
+            val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibrator.vibrate(VibrationEffect.createOneShot(50, VibrationEffect.DEFAULT_AMPLITUDE))
+        }
+
         for (i in editTexts.indices) {
             editTexts[i].addTextChangedListener(object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
-                    if (s?.length == 1 && i < editTexts.size - 1) {
-                        editTexts[i + 1].requestFocus() // Move forward when typing
+                    if (s?.length == 1) {
+                        if (i < editTexts.size - 1) {
+                            editTexts[i + 1].requestFocus() // Move forward
+                        }
+                    } else if (s?.length ?: 0 > 1) {
+                        // Prevents pasting more than 5 digits, trims excess
+                        val newText = s.toString().take(1)
+                        editTexts[i].setText(newText)
+                        editTexts[i].setSelection(newText.length) // Keep cursor at end
                     }
                 }
 
@@ -70,7 +88,7 @@ class RegisterUserActivity : AppCompatActivity() {
                     s: CharSequence?,
                     start: Int,
                     count: Int,
-                    after: Int,
+                    after: Int
                 ) {
                 }
 
@@ -80,14 +98,69 @@ class RegisterUserActivity : AppCompatActivity() {
             editTexts[i].setOnKeyListener { _, keyCode, event ->
                 if (keyCode == KeyEvent.KEYCODE_DEL && event.action == KeyEvent.ACTION_DOWN) {
                     if (editTexts[i].text.isEmpty() && i > 0) {
-                        editTexts[i - 1].setText("") // Clear previous box
-                        editTexts[i - 1].requestFocus() // Move focus back
+                        vibrate(binding.root.context) // Add vibration feedback
+                        editTexts[i - 1].requestFocus()
+                        editTexts[i - 1].setText("")
+                    } else if (i == editTexts.size - 1 && editTexts[i].text.isEmpty()) {
+                        editTexts[i - 1].requestFocus() // Fix: Moves focus back from last box
                     }
-                    return@setOnKeyListener true
                 }
                 false
             }
+
+            editTexts[i].setOnFocusChangeListener { _, hasFocus ->
+                if (hasFocus && !isFirstBoxFilled()) {
+                    editTexts[0].requestFocus()  // Always force focus on first box if empty
+                }
+            }
         }
+
+        binding.phoneNumber.apply {
+            setText("+91 ") // Set default prefix
+            setSelection(text?.length ?: 0) // Move cursor to the end
+
+            addTextChangedListener(object : TextWatcher {
+                private var isEditing = false // Flag to prevent infinite loops
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+                override fun afterTextChanged(s: Editable?) {
+                    if (isEditing || s == null) return
+                    isEditing = true
+
+                    // Ensure "+91 " prefix is always there
+                    if (!s.startsWith("+91 ")) {
+                        setText("+91  ")
+                    }
+
+                    // Prevent cursor from moving inside "+91 "
+                    if (selectionStart < 4) {
+                        setSelection(text?.length ?: 0)
+                    }
+
+                    // Extract actual phone number (excluding "+91 ")
+                    val phoneNumber = s.toString().replace("+91 ", "")
+
+                    // Show error if phone number is not exactly 10 digits
+                    binding.phoneNumberLayout.error = if (phoneNumber.length != 10) {
+                        "Phone number should be 10 digits"
+                    } else {
+                        null // Remove error when valid
+                    }
+
+                    isEditing = false
+                }
+            })
+        }
+
 
         // Redirects user to login activity if already registered
         binding.tVAlreadyReg.setOnClickListener {
@@ -105,7 +178,6 @@ class RegisterUserActivity : AppCompatActivity() {
                 }
             }
 
-        binding.tilpassword.watavher
 
         binding.apply {
             nextToNumberLL.setOnClickListener {
@@ -141,7 +213,7 @@ class RegisterUserActivity : AppCompatActivity() {
         // Handles user registration process when "Register" button is clicked
         binding.RegisterBtn.setOnClickListener {
             val fullname = binding.tilName.editText?.text.toString()
-            val phoneNumber = binding.phoneNumber.editText?.text.toString()
+            val phoneNumber = binding.phoneNumber.text.toString()
             val organization = binding.tilOrganization.editText?.text.toString()
             val email = binding.tilemail.editText?.text.toString()
             val password = binding.tilpassword.editText?.text.toString()
@@ -150,6 +222,12 @@ class RegisterUserActivity : AppCompatActivity() {
             // Ensures all fields are filled before proceeding
             if (email.isBlank() || password.isBlank() || organization.isBlank() || fullname.isBlank() || phoneNumber.isBlank() || phoneNum.isBlank() || name.isBlank() || securityPIN.isBlank()) {
                 Toast.makeText(this, "Enter all the details", Toast.LENGTH_SHORT).show()
+            } else if (phoneNumber.length != 14) {
+                Toast.makeText(this, "Phone Number should be of 10 digits", Toast.LENGTH_SHORT)
+                    .show()
+            } else if (securityPIN.length != 5) {
+                Toast.makeText(this, "Security PIN should be of 5 digits", Toast.LENGTH_SHORT)
+                    .show()
             } else {
                 binding.progressBar.visibility = View.VISIBLE
                 binding.mainContent.visibility = View.GONE
@@ -169,7 +247,6 @@ class RegisterUserActivity : AppCompatActivity() {
                     securityPIN = securityPIN
                 )
 
-                Toast.makeText(this, " $newUser", Toast.LENGTH_SHORT).show()
                 Log.d("RegisterUser", "$newUser")
 
                 val jsonBody = Gson().toJson(newUser)

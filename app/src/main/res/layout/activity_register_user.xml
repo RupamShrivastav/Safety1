@@ -206,7 +206,7 @@
                 </LinearLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/phoneNumber"
+                    android:id="@+id/phoneNumberLayout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -224,6 +224,7 @@
                         android:fontFamily="@font/poppins_regular"
                         android:inputType="number"
                         android:scrollHorizontally="true"
+                        android:id="@+id/phoneNumber"
                         android:singleLine="true"
                         android:textSize="14sp" />
 

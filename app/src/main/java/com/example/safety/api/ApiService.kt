@@ -13,14 +13,6 @@ import retrofit2.http.*
 interface ApiService {
 
     /**
-     * Retrieves a list of all users from the server.
-     *
-     * @return UsersListModel containing all registered users.
-     */
-    @GET("/allUsers")
-    fun getAllUsers(): UsersListModel
-
-    /**
      * Retrieves users belonging to a specific organization.
      *
      * @param org_name The name of the organization.
@@ -78,7 +70,7 @@ interface ApiService {
         @Body updatePasswordRequest: UpdatePasswordRequest
     ): Call<APIResponseModel>
 
-    @PUT("/user/updateSecurityPin")
+    @PUT("/updateUserSecurityPin")
     fun updateSecurityPin(
         @Body updateSecurityPinRequest: UpdateSecurityPinRequest
     ): Call<APIResponseModel>

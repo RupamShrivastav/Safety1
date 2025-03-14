@@ -21,7 +21,7 @@ import com.example.safety.common.Constants
 import com.example.safety.R
 import com.example.safety.common.SharedPrefFile
 import com.example.safety.databinding.ActivityMainBinding
-import com.example.safety.fragments.GuardFragment
+import com.example.safety.fragments.ServiceFragment
 import com.example.safety.fragments.HomeFragment
 import com.example.safety.fragments.MapplsMapFragment
 import com.example.safety.fragments.ProfileFragment
@@ -122,7 +122,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNav.setOnItemSelectedListener {
             when (it.itemId) {
                 R.id.btm_guard -> {
-                    inflateFragment(GuardFragment.newInstance())
+                    inflateFragment(ServiceFragment.newInstance())
                 }
                 R.id.btm_home -> {
                     inflateFragment(HomeFragment.newInstance())

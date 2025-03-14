@@ -97,38 +97,7 @@ class HomeFragment : Fragment() {
             }
         })
 
-        // Map icon click listener: Navigate to the Map fragment
-        binding.mapIcon.setOnClickListener {
-            requireActivity().supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.container, MapplsMapFragment())
-                .addToBackStack(null)
-                .commit()
         }
-
-        // Dots menu icon click listener: Show popup menu with options
-        binding.dotIcon.setOnClickListener {
-            val popMenu = PopupMenu(it.context, it)
-            popMenu.menuInflater.inflate(R.menu.home_menu, popMenu.menu)
-
-            // Handle menu item clicks
-            popMenu.setOnMenuItemClickListener { menuItem ->
-                when (menuItem.itemId) {
-                    R.id.settings -> {
-                        // Navigate to ProfileFragment (Settings screen)
-                        requireActivity().supportFragmentManager
-                            .beginTransaction()
-                            .replace(R.id.container, ProfileFragment())
-                            .addToBackStack(null)
-                            .commit()
-                        true
-                    }
-                    else -> false
-                }
-            }
-            popMenu.show()
-        }
-    }
 
     companion object {
         @JvmStatic
