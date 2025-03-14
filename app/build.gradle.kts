@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.Lint
 import java.util.Properties
 
 plugins {
@@ -54,6 +55,19 @@ android {
         buildConfig = true
     }
 
+    lint {
+        disable.addAll(
+            listOf(
+                "TimberArgCount",
+                "TimberArgTypes",
+                "TimberTagLength",
+                "BinaryOperationInTimber",
+                "LogNotTimber",
+                "StringFormatInTimber",
+                "ThrowableNotAtBeginning"
+            )
+        )
+    }
 
 }
 

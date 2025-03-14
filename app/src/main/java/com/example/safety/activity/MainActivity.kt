@@ -1,7 +1,9 @@
 package com.example.safety.activity
 
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.net.ConnectivityManager
@@ -23,6 +25,8 @@ import com.example.safety.fragments.GuardFragment
 import com.example.safety.fragments.HomeFragment
 import com.example.safety.fragments.MapplsMapFragment
 import com.example.safety.fragments.ProfileFragment
+import com.example.safety.models.UserModelItem
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
@@ -36,11 +40,26 @@ import com.google.firebase.firestore.SetOptions
  * This is the main dashboard/home screen of the application after login.
  * It provides access to core features of the Safety App.
  */
+/**
+ * MainActivity
+ *
+ * This is the main dashboard/home screen of the application after login.
+ * It provides access to core features of the Safety App.
+ * Enhanced with real-time updates for location, battery status, and connectivity.
+ */
 @Suppress("DEPRECATION")
 class MainActivity : AppCompatActivity() {
 
-
     private lateinit var binding: ActivityMainBinding // View binding for UI components
+    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private lateinit var locationCallback: LocationCallback
+    private lateinit var batteryReceiver: BroadcastReceiver
+    private lateinit var connectivityReceiver: BroadcastReceiver
+    private lateinit var db: FirebaseFirestore
+    private lateinit var sharedPref: SharedPrefFile
+    private var userData: UserModelItem? = null
+    private var lastBatteryPercentage = -1
+    private var lastConnectionInfo = ""
 
     // Array of permissions required for the app to function
     private val permissionArray = arrayOf(
@@ -61,6 +80,15 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Initialize Firebase and SharedPreferences
+        db = FirebaseFirestore.getInstance()
+        sharedPref = SharedPrefFile
+        sharedPref.init(this)
+        userData = sharedPref.getUserData(Constants.SP_USERDATA)
+
+        // Initialize location services
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+
         // Handle back button press behavior
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
@@ -72,10 +100,17 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        // Create location callback
+        setupLocationCallback()
+
+        // Setup battery and connectivity receivers
+        setupBatteryReceiver()
+        setupConnectivityReceiver()
+
         // Check for permissions and location settings
         if (isAllPermissionGranted()) {
             if (isLocationEnabled(this)) {
-                setUpLocationListener(this) // Start location updates
+                startLocationUpdates() // Start location updates
             } else {
                 showGPSNotEnabledDialog(this) // Prompt user to enable GPS
             }
@@ -110,71 +145,144 @@ class MainActivity : AppCompatActivity() {
     }
 
     /**
-     * Sets up the location listener to receive location updates
+     * Sets up the location callback for receiving location updates
      */
-    private fun setUpLocationListener(context: Context) {
-        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        Log.d("LocationData", "Starting location setup")
+    private fun setupLocationCallback() {
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                super.onLocationResult(locationResult)
+                Log.d("LocationData", "Received location update")
+
+                for (location in locationResult.locations) {
+                    updateUserDataInFirestore(
+                        location.latitude.toString(),
+                        location.longitude.toString()
+                    )
+                }
+            }
+        }
+    }
+
+    /**
+     * Sets up battery status receiver
+     */
+    private fun setupBatteryReceiver() {
+        batteryReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val currentBatteryPercentage = batteryPercentage()
+                if (currentBatteryPercentage != lastBatteryPercentage) {
+                    lastBatteryPercentage = currentBatteryPercentage
+                    updateUserDataInFirestore(batteryPercentageOnly = true)
+                }
+            }
+        }
+
+        val filter = IntentFilter().apply {
+            addAction(Intent.ACTION_BATTERY_CHANGED)
+            addAction(Intent.ACTION_POWER_CONNECTED)
+            addAction(Intent.ACTION_POWER_DISCONNECTED)
+        }
+        registerReceiver(batteryReceiver, filter)
+    }
+
+    /**
+     * Sets up connectivity status receiver
+     */
+    private fun setupConnectivityReceiver() {
+        connectivityReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context, intent: Intent) {
+                val currentConnectionInfo = networkConnected()
+                if (currentConnectionInfo != lastConnectionInfo) {
+                    lastConnectionInfo = currentConnectionInfo
+                    updateUserDataInFirestore(connectivityOnly = true)
+                }
+            }
+        }
+
+        val filter = IntentFilter().apply {
+            addAction(ConnectivityManager.CONNECTIVITY_ACTION)
+        }
+        registerReceiver(connectivityReceiver, filter)
+    }
+
+    /**
+     * Updates user data in Firestore
+     */
+    private fun updateUserDataInFirestore(
+        lat: String? = null,
+        long: String? = null,
+        batteryPercentageOnly: Boolean = false,
+        connectivityOnly: Boolean = false
+    ) {
+        userData?.let { user ->
+            val mail = user.email
+            Log.d("FirestoreUpdate", "Updating data for user: $mail")
+
+            val data = hashMapOf<String, Any>()
+
+            // Only update what's changed to minimize Firestore writes
+            if (lat != null && long != null) {
+                data["lat"] = lat
+                data["long"] = long
+                Log.d("FirestoreUpdate", "Location update: $lat, $long")
+            }
+
+            if (batteryPercentageOnly || (!batteryPercentageOnly && !connectivityOnly)) {
+                data["batPer"] = batteryPercentage()
+                Log.d("FirestoreUpdate", "Battery update: ${data["batPer"]}")
+            }
+
+            if (connectivityOnly || (!batteryPercentageOnly && !connectivityOnly)) {
+                data["connectionInfo"] = networkConnected()
+                Log.d("FirestoreUpdate", "Connectivity update: ${data["connectionInfo"]}")
+            }
+
+            // Always include user info
+            if (!batteryPercentageOnly && !connectivityOnly) {
+                data["name"] = user.fullName
+                data["phoneNumber"] = user.phoneNumber
+            }
+
+            if (data.isNotEmpty()) {
+                db.collection(Constants.FIRESTORE_COLLECTION)
+                    .document(mail)
+                    .set(data, SetOptions.merge())
+                    .addOnSuccessListener {
+                        Log.d("FirestoreUpdate", "Successfully updated data")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("FirestoreUpdate", "Failed to update data", e)
+                    }
+            }
+        }
+    }
+
+    /**
+     * Starts location updates with high accuracy and frequency
+     */
+    private fun startLocationUpdates() {
+        Log.d("LocationData", "Starting location updates")
 
         val locationRequest = LocationRequest().apply {
-            interval = 2000 // Update interval in milliseconds
-            fastestInterval = 2000
+            interval = 1000 // Update interval set to 1 second
+            fastestInterval = 500 // Fastest update interval 500ms
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 
         // Check for location permissions
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
             Log.d("LocationData", "Permission check failed")
             return
         }
 
         fusedLocationProviderClient.requestLocationUpdates(
             locationRequest,
-            object : LocationCallback() {
-                override fun onLocationResult(locationResult: LocationResult) {
-                    super.onLocationResult(locationResult)
-                    Log.d("LocationData", "Received location update")
-
-                    for (location in locationResult.locations) {
-                        Log.d("FirestoreUpdate", "Processing location: ${location.latitude}, ${location.longitude}")
-
-                        val db = FirebaseFirestore.getInstance()
-                        val sharedPref = SharedPrefFile
-                        sharedPref.init(context)
-
-                        val userData = sharedPref.getUserData(Constants.SP_USERDATA)
-
-                        userData?.let {
-                            val mail = userData.email
-                            Log.d("FirestoreUpdate", "User email: $mail")
-
-                            // Data to be stored in Firestore
-                            val data = hashMapOf(
-                                "lat" to location.latitude.toString(),
-                                "long" to location.longitude.toString(),
-                                "connectionInfo" to networkConnected(),
-                                "batPer" to batteryPercentage(),
-                                "name" to userData.fullName,
-                                "phoneNumber" to userData.phoneNumber
-                            )
-
-                            Log.d("FirestoreUpdate", "Attempting to update with data: $data")
-
-                            // Store user location and details in Firestore
-                            db.collection(Constants.FIRESTORE_COLLECTION)
-                                .document(mail)
-                                .set(data, SetOptions.merge())
-                                .addOnSuccessListener {
-                                    Log.d("FirestoreUpdate", "Successfully updated location")
-                                }
-                                .addOnFailureListener { e ->
-                                    Log.e("FirestoreUpdate", "Failed to update location", e)
-                                }
-                        }
-                    }
-                }
-            },
-            Looper.myLooper()
+            locationCallback,
+            Looper.getMainLooper()
         )
     }
 
@@ -199,14 +307,18 @@ class MainActivity : AppCompatActivity() {
     /**
      * Handles the result of permission requests
      */
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         if (requestCode == permissionCode) {
             if (isAllPermissionGranted()) {
                 Log.d("LocationData", "All permissions granted")
                 if (isLocationEnabled(this)) {
-                    setUpLocationListener(this)
+                    startLocationUpdates()
                 } else {
                     showGPSNotEnabledDialog(this)
                 }
@@ -229,7 +341,11 @@ class MainActivity : AppCompatActivity() {
      */
     private fun isAllPermissionGranted(): Boolean {
         for (items in permissionArray) {
-            if (ActivityCompat.checkSelfPermission(this, items) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(
+                    this,
+                    items
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
                 return false
             }
         }
@@ -256,7 +372,8 @@ class MainActivity : AppCompatActivity() {
      */
     private fun isLocationEnabled(context: Context): Boolean {
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
     }
 
     /**
@@ -271,5 +388,32 @@ class MainActivity : AppCompatActivity() {
                 context.startActivity(Intent(ACTION_LOCATION_SOURCE_SETTINGS))
             }
             .show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (isAllPermissionGranted() && isLocationEnabled(this)) {
+            startLocationUpdates()
+        }
+        // Get initial values
+        lastBatteryPercentage = batteryPercentage()
+        lastConnectionInfo = networkConnected()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Stop location updates when app is in background to save battery
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Unregister receivers
+        try {
+            unregisterReceiver(batteryReceiver)
+            unregisterReceiver(connectivityReceiver)
+        } catch (e: Exception) {
+            Log.e("MainActivity", "Error unregistering receivers", e)
+        }
     }
 }

@@ -7,12 +7,16 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.isVisible
 import com.example.safety.api.RetrofitInstance
 import com.example.safety.common.Constants
 import com.example.safety.common.SharedPrefFile
 import com.example.safety.databinding.ActivityLoginUserBinding
+import com.example.safety.models.APIResponseModel
+import com.example.safety.models.ForgotPasswordRequest
 import com.example.safety.models.LoginInfoModel
 import com.example.safety.models.VerifiedUserModel
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -57,6 +61,17 @@ class LoginUserActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.apply {
+            forgetPassword.setOnClickListener {
+                forgotPasswordLL.isVisible = true
+                loginLL.isVisible = false
+            }
+            cancelBtnFP.setOnClickListener {
+                forgotPasswordLL.isVisible = false
+                loginLL.isVisible = true
+            }
+        }
+
         // Handle login button click
         binding.loginBtn.setOnClickListener {
             val email = binding.tilemailLogin.editText?.text.toString()
@@ -71,12 +86,13 @@ class LoginUserActivity : AppCompatActivity() {
                     .enqueue(object : Callback<VerifiedUserModel> {
                         override fun onResponse(
                             call: Call<VerifiedUserModel>,
-                            response: Response<VerifiedUserModel>
+                            response: Response<VerifiedUserModel>,
                         ) {
                             Log.d("Rupam $TAG", "Response: ${response.body()?.userData}")
 
-                            when (response.code()) {
-                                200 -> { // Successful login
+                            try {
+                                if (response.isSuccessful) {  //  Handles 200-299
+                                    // Successful login
                                     sharedpref.putLoggedInfo(Constants.SP_LOGGED_INFO, true)
                                     sharedpref.putUserData(
                                         Constants.SP_USERDATA,
@@ -93,25 +109,128 @@ class LoginUserActivity : AppCompatActivity() {
                                     }, 1500)
 
                                     startActivity(Intent(baseContext, MainActivity::class.java))
+
+                                } else {  // Handles 400, 404, 500
+                                    val errorMessage = JSONObject(
+                                        response.errorBody()?.string().toString()
+                                    ).getString("message") ?: "Unknown error"
+                                    Toast.makeText(baseContext, errorMessage, Toast.LENGTH_SHORT)
+                                        .show()
                                 }
-                                401 -> { // Incorrect password
-                                    Toast.makeText(baseContext, "Wrong Password", Toast.LENGTH_SHORT).show()
-                                }
-                                404 -> { // User not found
-                                    Toast.makeText(
-                                        baseContext,
-                                        "No User Found, Recheck Email or Register as New User",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
+                            } catch (e: Exception) {
+                                Log.e(
+                                    "${Constants.TAG} ProfileFragment",
+                                    "Error processing response: ${e.message}"
+                                )
+                                Toast.makeText(
+                                    baseContext,
+                                    "Something went wrong!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
 
                         override fun onFailure(call: Call<VerifiedUserModel>, t: Throwable) {
-                            Log.e("Rupam $TAG", "Response: ${t.message}") // Log error on API failure
+                            Log.e(
+                                "Rupam $TAG",
+                                "Response: ${t.message}"
+                            ) // Log error on API failure
                         }
                     })
             }
         }
+
+        binding.apply {
+            resetPasswordBtnFP.setOnClickListener {
+                val emailOrPhone = emailOrPhoneFP.editText?.text.toString()
+                val securityPIN = securityPINFP.editText?.text.toString()
+                val newPassword = newPasswordFP.editText?.text.toString()
+
+                if (emailOrPhone.isBlank() || securityPIN.isBlank() || newPassword.isBlank()) {
+                    Toast.makeText(baseContext, "Enter all the details", Toast.LENGTH_SHORT).show()
+                } else {
+                    val forgotPassword = ForgotPasswordRequest(
+                        emailOrPhone = emailOrPhone,
+                        securityPIN = securityPIN,
+                        newPassword = newPassword
+                    )
+
+                    retrofit.forgotPassword(forgotPassword)
+                        .enqueue(object : Callback<APIResponseModel> {
+                            override fun onResponse(
+                                call: Call<APIResponseModel>,
+                                response: Response<APIResponseModel>,
+                            ) {
+                                Log.d("${Constants.TAG} ForgotPassword ", " ${response}")
+
+                                when (response.code()) {
+                                    200 -> {
+                                        Toast.makeText(
+                                            baseContext,
+                                            "Password reset successful",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        finish()
+                                        startActivity(
+                                            Intent(
+                                                baseContext,
+                                                LoginUserActivity::class.java
+                                            )
+                                        )
+                                    }
+
+                                    404 -> {
+                                        Toast.makeText(
+                                            baseContext,
+                                            "User not found",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        finish()
+                                        startActivity(
+                                            Intent(
+                                                baseContext,
+                                                LoginUserActivity::class.java
+                                            )
+                                        )
+                                    }
+
+                                    401 -> {
+                                        Toast.makeText(
+                                            baseContext,
+                                            "Invalid Email or PIN",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        finish()
+                                        startActivity(
+                                            Intent(
+                                                baseContext,
+                                                LoginUserActivity::class.java
+                                            )
+                                        )
+                                    }
+
+                                    else -> {
+                                        Toast.makeText(
+                                            baseContext,
+                                            "Error in response",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+
+                            }
+
+                            override fun onFailure(call: Call<APIResponseModel>, t: Throwable) {
+                                Log.d(
+                                    "${Constants.TAG} ForgotPassword ",
+                                    "API Call Failed: ${t.message}"
+                                )
+
+                            }
+                        })
+                }
+            }
+        }
+
     }
 }

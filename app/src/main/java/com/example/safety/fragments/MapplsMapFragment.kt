@@ -129,11 +129,19 @@ class MapplsMapFragment : Fragment() {
      */
     private fun enableUserLocation(map: MapplsMap) {
         val locationComponent = map.locationComponent
+        val mapStyle = map.style
+
+        if (mapStyle == null) {
+            Log.e("${Constants.TAG} MapplsMapFragment", "Map style is null. Location component cannot be enabled yet.")
+            return  // 🔥 Prevents crash if map style isn't ready
+        }
+
         locationComponent.activateLocationComponent(
-            LocationComponentActivationOptions.builder(requireContext(), map.style!!).build()
+            LocationComponentActivationOptions.builder(requireContext(), mapStyle).build()
         )
         locationComponent.isLocationComponentEnabled = true
     }
+
 
     /**
      * Fetches all users' locations from Firestore and displays them as markers

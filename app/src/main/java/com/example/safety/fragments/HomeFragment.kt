@@ -39,7 +39,9 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initially show progress bar and hide main content
+
+        var adapter = SafetyAdapter(UsersListModel())
+            // Initially show progress bar and hide main content
         binding.progressBar.visibility = View.VISIBLE
         binding.mainContent.visibility = View.GONE
 
@@ -82,7 +84,7 @@ class HomeFragment : Fragment() {
                     sharedPref.putAllUsersByOrg(Constants.SP_ALL_USERS_BY_ORG, response.body()!!)
 
                     // Set up RecyclerView adapter with retrieved user list
-                    val adapter = SafetyAdapter(response.body()!!)
+                    adapter = SafetyAdapter(response.body()!!)
                     binding.rvHome.adapter = adapter
                     binding.rvHome.adapter?.notifyDataSetChanged()
                 } else {

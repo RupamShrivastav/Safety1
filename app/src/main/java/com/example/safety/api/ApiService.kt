@@ -17,7 +17,7 @@ interface ApiService {
      *
      * @return UsersListModel containing all registered users.
      */
-    @GET("/allusers")
+    @GET("/allUsers")
     fun getAllUsers(): UsersListModel
 
     /**
@@ -29,6 +29,10 @@ interface ApiService {
     @GET("/organization/{org_name}/users")
     fun getUsersByOrg(@Path("org_name") org_name: String): Call<UsersListModel>
 
+
+    @POST("/forgotPassword")
+    fun forgotPassword(@Body forgotPasswordModel: ForgotPasswordRequest) : Call<APIResponseModel>
+
     /**
      * Registers a new user.
      *
@@ -36,7 +40,7 @@ interface ApiService {
      * @return A Call object containing an APIResponseModel with the registration status.
      */
     @POST("/user")
-    fun registerNewUser(@Body user: UserModelItem): Call<APIResponseModel>
+    fun registerNewUser(@Body user: UserModelItem): Call<NewRegistrationResponse>
 
     /**
      * Verifies user login credentials.
@@ -44,19 +48,39 @@ interface ApiService {
      * @param loginInfoModel A LoginInfoModel containing email and password.
      * @return A Call object containing a VerifiedUserModel with user authentication status.
      */
-    @POST("/users/verify-user")
+    @POST("/users/verifyUser")
     fun verifyUser(@Body loginInfoModel: LoginInfoModel): Call<VerifiedUserModel>
 
     /**
      * Updates a user's trusted contact details based on their email.
      *
      * @param email The email address of the user whose contact details need to be updated.
-     * @param updateTrustedContactInfo The new trusted contact information.
+     * @param updateTrustedContactRequest The new trusted contact information.
      * @return A Call object containing an APIResponseModel indicating success or failure.
      */
-    @PUT("/updateTrustedContactNumber/{email}")
+    @PUT("/updateTrustedContactNumber")
     fun updateTrustedContact(
-        @Path("email") email: String,
-        @Body updateTrustedContactInfo: UpdateTrustedContactInfo
+        @Body updateTrustedContactRequest: UpdateTrustedContactRequest
     ): Call<APIResponseModel>
+
+    @PUT("/updateUserFullName")
+    fun updateUserFullName(
+        @Body updateNameModel: UpdateNameRequest
+    ): Call<APIResponseModel>
+
+    @PUT("/updateUserPhoneNo")
+    fun updateUserPhoneNo(
+        @Body updatePhoneNumberRequest: UpdatePhoneNumberRequest
+    ): Call<APIResponseModel>
+
+    @PUT("/updateUserPassword")
+    fun updateUserPassword(
+        @Body updatePasswordRequest: UpdatePasswordRequest
+    ): Call<APIResponseModel>
+
+    @PUT("/user/updateSecurityPin")
+    fun updateSecurityPin(
+        @Body updateSecurityPinRequest: UpdateSecurityPinRequest
+    ): Call<APIResponseModel>
+
 }

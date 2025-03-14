@@ -41,7 +41,7 @@ class SafetyAdapter(private val memberList: UsersListModel) :
 
  // Suppresses warning for setting text directly in UI
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = memberList[position] // Gets the user at the current position
+        val item = memberList!![position] // Gets the user at the current position
         fdb = FirebaseFirestore.getInstance() // Initializes Firestore instance
 
         // Fetches user details from Firestore using the email as the document ID
@@ -90,6 +90,6 @@ class SafetyAdapter(private val memberList: UsersListModel) :
 
     // Returns the total number of items in the list
     override fun getItemCount(): Int {
-        return memberList.size
+        return memberList?.size ?: 0
     }
 }

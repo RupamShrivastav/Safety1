@@ -9,7 +9,8 @@
     <color name="white">#eeeeee</color>
     <color name="green">#63d2c7</color>
     <color name="red">#ec6f78</color>
-    <color name="grey">#706F6F</color>
+    <color name="cancel_red">#C8212D</color>
+    <color name="grey">#939393</color>
     <color name="light_green">#9AFBF2</color>
     <color name="light_purple">#909BDC</color>
     <color name="gradient_start_color">#204C64</color>

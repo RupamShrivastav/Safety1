@@ -7,7 +7,10 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.ContactsContract
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
@@ -19,8 +22,11 @@ import com.example.safety.common.Constants
 import com.example.safety.common.SharedPrefFile
 import com.example.safety.databinding.ActivityRegisterUserBinding
 import com.example.safety.models.APIResponseModel
+import com.example.safety.models.NewRegistrationResponse
 import com.example.safety.models.UserModelItem
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.gson.Gson
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -49,6 +55,40 @@ class RegisterUserActivity : AppCompatActivity() {
         binding = ActivityRegisterUserBinding.inflate(layoutInflater)
         setContentView(binding.root) // Set the content view using binding
 
+
+        val editTexts = listOf(binding.pin1, binding.pin2, binding.pin3, binding.pin4, binding.pin5)
+
+        for (i in editTexts.indices) {
+            editTexts[i].addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(s: Editable?) {
+                    if (s?.length == 1 && i < editTexts.size - 1) {
+                        editTexts[i + 1].requestFocus() // Move forward when typing
+                    }
+                }
+
+                override fun beforeTextChanged(
+                    s: CharSequence?,
+                    start: Int,
+                    count: Int,
+                    after: Int,
+                ) {
+                }
+
+                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            })
+
+            editTexts[i].setOnKeyListener { _, keyCode, event ->
+                if (keyCode == KeyEvent.KEYCODE_DEL && event.action == KeyEvent.ACTION_DOWN) {
+                    if (editTexts[i].text.isEmpty() && i > 0) {
+                        editTexts[i - 1].setText("") // Clear previous box
+                        editTexts[i - 1].requestFocus() // Move focus back
+                    }
+                    return@setOnKeyListener true
+                }
+                false
+            }
+        }
+
         // Redirects user to login activity if already registered
         binding.tVAlreadyReg.setOnClickListener {
             val intent = Intent(this, LoginUserActivity::class.java)
@@ -57,18 +97,39 @@ class RegisterUserActivity : AppCompatActivity() {
         }
 
         // Initializes the contact picker launcher
-        pickContactLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data: Intent? = result.data
-                handleContactResult(data) // Handle contact selection
+        pickContactLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+                if (result.resultCode == Activity.RESULT_OK) {
+                    val data: Intent? = result.data
+                    handleContactResult(data) // Handle contact selection
+                }
             }
-        }
 
-        // Moves to phone number entry step in the registration process
+        binding.tilpassword.watavher
+
         binding.apply {
-            nextBtn.setOnClickListener {
+            nextToNumberLL.setOnClickListener {
                 nepLL.visibility = View.GONE
                 numberLL.visibility = View.VISIBLE
+                pinLL.visibility = View.GONE
+            }
+
+            nextToPinLL.setOnClickListener {
+                nepLL.visibility = View.GONE
+                numberLL.visibility = View.GONE
+                pinLL.visibility = View.VISIBLE
+            }
+
+            backToNepLL.setOnClickListener {
+                nepLL.visibility = View.VISIBLE
+                numberLL.visibility = View.GONE
+                pinLL.visibility = View.GONE
+            }
+
+            backToNumberLL.setOnClickListener {
+                nepLL.visibility = View.GONE
+                numberLL.visibility = View.VISIBLE
+                pinLL.visibility = View.GONE
             }
         }
 
@@ -84,9 +145,10 @@ class RegisterUserActivity : AppCompatActivity() {
             val organization = binding.tilOrganization.editText?.text.toString()
             val email = binding.tilemail.editText?.text.toString()
             val password = binding.tilpassword.editText?.text.toString()
+            val securityPIN = editTexts.joinToString("") { it.text.toString() }
 
             // Ensures all fields are filled before proceeding
-            if (email.isBlank() || password.isBlank() || organization.isBlank() || fullname.isBlank()) {
+            if (email.isBlank() || password.isBlank() || organization.isBlank() || fullname.isBlank() || phoneNumber.isBlank() || phoneNum.isBlank() || name.isBlank() || securityPIN.isBlank()) {
                 Toast.makeText(this, "Enter all the details", Toast.LENGTH_SHORT).show()
             } else {
                 binding.progressBar.visibility = View.VISIBLE
@@ -98,37 +160,37 @@ class RegisterUserActivity : AppCompatActivity() {
                     email = email,
                     password = password,
                     fullName = fullname,
-                    personID = (100..1000).random().toString(),
+                    userID = (100..1000).random().toString(),
                     organizationID = (100..1000).random().toString(),
                     phoneNumber = phoneNumber,
                     trustedContactID = (100..1000).random().toString(),
-                    trustedContactNumber = normalizePhoneNumber(phoneNum).toString(),
-                    trustedContactName = name
+                    trustedContactNumber = Constants.normalizePhoneNumber(phoneNum).toString(),
+                    trustedContactName = name,
+                    securityPIN = securityPIN
                 )
+
+                Toast.makeText(this, " $newUser", Toast.LENGTH_SHORT).show()
+                Log.d("RegisterUser", "$newUser")
+
+                val jsonBody = Gson().toJson(newUser)
+                Log.d("${Constants.TAG} API_REQUEST", "JSON Body: $jsonBody")
 
                 // Sending the user data to the backend API for registration
                 retrofit.registerNewUser(newUser)
-                    .enqueue(object : Callback<APIResponseModel> {
+                    .enqueue(object : Callback<NewRegistrationResponse> {
                         override fun onResponse(
-                            call: Call<APIResponseModel>,
-                            response: Response<APIResponseModel>,
+                            call: Call<NewRegistrationResponse>,
+                            response: Response<NewRegistrationResponse>,
                         ) {
-                            Log.d("RegisterUser", "Response: ${response.body()}")
+                            Log.d("${Constants.TAG} RegisterUser", "Response: ${response.body()}")
 
-                            when (response.code()) {
-                                400 -> { // Invalid email case
-                                    Toast.makeText(baseContext, "Invalid email", Toast.LENGTH_SHORT).show()
-                                    startActivity(Intent(baseContext, RegisterUserActivity::class.java))
-                                    finish()
-                                }
-                                409 -> { // Email already exists
-                                    Toast.makeText(baseContext, "Email Already exists", Toast.LENGTH_SHORT).show()
-                                    startActivity(Intent(baseContext, LoginUserActivity::class.java))
-                                    finish()
-                                }
-                                201 -> { // Successfully registered
+
+
+                            try {
+                                if (response.isSuccessful) { // Successfully registered
                                     sharedpref.putLoggedInfo(Constants.SP_LOGGED_INFO, true)
                                     sharedpref.putUserData(Constants.SP_USERDATA, newUser)
+                                    Log.d("${Constants.TAG} RegisterUser", "New User: ${newUser}")
 
                                     val fdbData = hashMapOf(
                                         "lat" to "0.0",
@@ -146,20 +208,37 @@ class RegisterUserActivity : AppCompatActivity() {
                                             Log.d("RegisterUser", "New Firebase entry: $fdbData")
                                         }
                                         .addOnFailureListener {
-                                            Log.d("RegisterUser", "Error in Firebase: ${it.message}")
+                                            Log.d(
+                                                "RegisterUser",
+                                                "Error in Firebase: ${it.message}"
+                                            )
                                         }
 
                                     binding.progressBar.visibility = View.GONE
                                     binding.mainContent.visibility = View.VISIBLE
                                     startActivity(Intent(baseContext, MainActivity::class.java))
+                                    finish()
+                                } else {  // Handles 400, 404, 500
+                                    val errorMessage = JSONObject(
+                                        response.errorBody()?.string().toString()
+                                    ).getString("message") ?: "Unknown error"
+                                    Toast.makeText(baseContext, errorMessage, Toast.LENGTH_SHORT)
+                                        .show()
                                 }
-                                else -> {
-                                    Log.d("RegisterUser", "Error in response")
-                                }
+                            } catch (e: Exception) {
+                                Log.e(
+                                    "${Constants.TAG} ProfileFragment",
+                                    "Error processing response: ${e.message}"
+                                )
+                                Toast.makeText(
+                                    baseContext,
+                                    "Something went wrong!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         }
 
-                        override fun onFailure(call: Call<APIResponseModel>, t: Throwable) {
+                        override fun onFailure(call: Call<NewRegistrationResponse>, t: Throwable) {
                             Log.d("RegisterUser", "API Call Failed: ${t.message}")
                         }
                     })
@@ -201,7 +280,11 @@ class RegisterUserActivity : AppCompatActivity() {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 launchContactPicker()
             } else {
-                Toast.makeText(this, "Permission denied. Cannot access contacts.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    this,
+                    "Permission denied. Cannot access contacts.",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
     }
@@ -224,9 +307,11 @@ class RegisterUserActivity : AppCompatActivity() {
             cursor?.use {
                 if (it.moveToFirst()) {
                     val id = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
-                    name = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME))
+                    name =
+                        it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME))
 
-                    val hasPhone = it.getInt(it.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER))
+                    val hasPhone =
+                        it.getInt(it.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER))
                     if (hasPhone > 0) {
                         val phoneCursor = contentResolver.query(
                             ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -237,27 +322,18 @@ class RegisterUserActivity : AppCompatActivity() {
                         )
                         phoneCursor?.use { phone ->
                             if (phone.moveToFirst()) {
-                                phoneNum = phone.getString(phone.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                                phoneNum =
+                                    phone.getString(phone.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
                                 binding.trustedContactNumber.setText("$name - $phoneNum")
                             }
                         }
                     } else {
-                        Toast.makeText(this, "Contact has no phone number", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Contact has no phone number", Toast.LENGTH_SHORT)
+                            .show()
                     }
                 }
             }
         }
     }
 
-    /**
-     * Normalizes the phone number by removing extra characters
-     */
-    private fun normalizePhoneNumber(number: String?): String? {
-        var phoneNumber = number ?: return null
-        phoneNumber = phoneNumber.replace(" ", "")
-        if (phoneNumber.length > 10 && phoneNumber[0] == '+') {
-            phoneNumber = phoneNumber.substring(3)
-        }
-        return phoneNumber
-    }
 }

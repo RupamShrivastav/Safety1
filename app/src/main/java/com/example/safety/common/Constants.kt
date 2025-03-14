@@ -22,4 +22,16 @@ object Constants {
 
     // 🔹 Default values for fallback scenarios
     const val DEFAULT_PHONE_NUMBER = "0"
+
+    fun normalizePhoneNumber(number: String?): String? {
+        var phoneNumber = number ?: return null
+        phoneNumber = phoneNumber.replace(" ", "")
+        if (phoneNumber.length > 10 && phoneNumber[0] == '+') {
+            phoneNumber = phoneNumber.substring(3)
+        }
+        return phoneNumber
+    }
+
 }
+
+
