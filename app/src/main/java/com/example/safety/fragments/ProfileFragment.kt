@@ -586,7 +586,7 @@ class ProfileFragment : Fragment() {
         sharedPref.init(requireContext())
 
         val inviteMessage =
-            "I invite you to Safety\nDownload the app from the link https://github.com/Jayamshriv/Safety_Project/releases/download/testing/app-release.apk\nAdd Organization - ${
+            "I invite you to Safety\nDownload the app from the link https://github.com/RupamShrivastav/Safety1/releases/download/beta_v2/app-debug.apk\nAdd Organization - ${
                 sharedPref.getUserData(Constants.SP_USERDATA)!!.organization
             }"
 
