@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Required Permissions -->
+    <!-- Precise location (GPS) -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!-- Approximate location -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <!-- Access user's contacts -->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <!-- Check network connectivity -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <!-- Internet access -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Make phone calls -->
+    <uses-permission android:name="android.permission.CALL_PHONE"
+        tools:ignore="PermissionImpliesUnsupportedChromeOsHardware" />
+    <!-- Send SMS messages -->
+    <uses-permission android:name="android.permission.SEND_SMS"
+        tools:ignore="PermissionImpliesUnsupportedChromeOsHardware" />
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+    <application
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:name=".application.SafetyMainApplication"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Safety"
+        tools:targetApi="31">
+
+        <!-- Main Activity -->
+        <activity
+            android:name=".activity.MainActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity"/>
+
+        <!-- User Registration Activity -->
+        <activity
+            android:name=".activity.RegisterUserActivity"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity"
+            android:exported="false"/>
+
+        <!-- User Login Activity -->
+        <activity
+            android:name=".activity.LoginUserActivity"
+            android:screenOrientation="portrait"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity"
+            android:exported="false"/>
+
+        <!-- Splash Screen Activity -->
+        <activity
+            android:name=".SplashScreen"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashScreen_bg"
+            tools:ignore="DiscouragedApi,LockedOrientationActivity"
+            android:exported="true">
+
+            <intent-filter>
+                <!-- Entry point for the app -->
+                <action android:name="android.intent.action.MAIN" />
+                <!-- App launcher category -->
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

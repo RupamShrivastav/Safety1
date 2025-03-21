@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Layer-list drawable that stacks multiple drawables on top of each other.
+    Used to create complex UI elements by layering images, gradients, or shapes.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Background layer: Applies a gradient background.
+        This layer is drawn first and acts as the base layer.
+    -->
+    <item android:drawable="@drawable/bg_gradient" />
+
+    <!--
+        Foreground layer: Centers an image over the gradient background.
+        - `android:gravity="center"` ensures the image is placed in the middle.
+        - `android:width` and `android:height` define the image size.
+    -->
+    <item
+        android:drawable="@drawable/app_image_circle"
+        android:gravity="center"
+        android:width="@dimen/dimen_150dp"
+        android:height="@dimen/dimen_150dp" />
+
+</layer-list>

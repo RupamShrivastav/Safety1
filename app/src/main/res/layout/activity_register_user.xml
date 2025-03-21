@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_gradient"
+    tools:context=".activity.RegisterUserActivity">
+
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/progressBar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:indeterminate="true"
+        app:indicatorColor="@color/app_color"
+        app:indicatorInset="@dimen/dimen_10dp"
+        app:trackColor="@color/app_light_color"
+        app:trackCornerRadius="@dimen/dimen_10dp" />
+
+    <LinearLayout
+        android:id="@+id/mainContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/cvImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_8dp"
+            android:orientation="vertical"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="@dimen/dimen_150dp"
+                android:layout_height="@dimen/dimen_150dp"
+                android:layout_gravity="center"
+                android:padding="@dimen/dimen_4dp"
+                android:src="@drawable/app_image_circle" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="@font/poppins_semi_bold"
+                android:text="@string/app_name"
+                android:textColor="@color/white"
+                android:textSize="@dimen/dimen_28sp" />
+
+        </LinearLayout>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/registrationCV"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/dimen_8dp"
+            android:background="#CAC6C6"
+            android:elevation="@dimen/dimen_32dp"
+            app:cardCornerRadius="@dimen/dimen_16dp">
+
+            <LinearLayout
+                android:id="@+id/nepLL"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_8dp"
+                    android:fontFamily="@font/poppins_regular"
+                    android:gravity="center_horizontal"
+                    android:text="Register Yourself on Safety"
+                    android:textColor="@color/cardview_dark_background"
+                    android:textSize="@dimen/dimen_20sp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilName"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_8dp"
+                    android:hint="Full Name"
+                    app:boxCornerRadiusTopEnd="@dimen/text_input_layout_corner"
+                    app:boxCornerRadiusTopStart="@dimen/text_input_layout_corner"
+                    app:boxStrokeColor="@color/app_light_color"
+                    app:cursorColor="@color/app_light_color"
+                    app:endIconMode="clear_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:inputType="textCapWords"
+                        android:scrollHorizontally="true"
+                        android:singleLine="true"
+                        android:textSize="14sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilemail"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_8dp"
+                    android:hint="Email"
+                    app:boxCornerRadiusTopEnd="@dimen/text_input_layout_corner"
+                    app:boxCornerRadiusTopStart="@dimen/text_input_layout_corner"
+                    app:boxStrokeColor="@color/app_light_color"
+                    app:cursorColor="@color/app_light_color">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:inputType="textEmailAddress"
+                        android:scrollHorizontally="true"
+                        android:singleLine="true"
+                        android:textSize="14sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilpassword"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_8dp"
+                    android:hint="Password"
+                    app:boxCornerRadiusTopEnd="@dimen/text_input_layout_corner"
+                    app:boxCornerRadiusTopStart="@dimen/text_input_layout_corner"
+                    app:boxStrokeColor="@color/app_light_color"
+                    app:cursorColor="@color/app_light_color"
+                    app:endIconMode="password_toggle"
+                    app:passwordToggleTint="@color/app_color">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:inputType="textPassword"
+                        android:scrollHorizontally="true"
+                        android:singleLine="true"
+                        android:textSize="14sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/nextToNumberLL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="36dp"
+                    android:layout_marginBottom="@dimen/dimen_10dp"
+                    android:backgroundTint="@color/app_color"
+                    android:paddingHorizontal="54dp"
+                    android:paddingVertical="@dimen/dimen_10dp"
+                    android:src="@drawable/baseline_navigate_next_24"
+                    app:rippleColor="@color/app_light_color"
+                    app:tint="@color/white" />
+
+                <TextView
+                    android:id="@+id/tV_alreadyReg"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_8dp"
+                    android:clickable="true"
+                    android:fontFamily="@font/poppins_extra_light_italic"
+                    android:gravity="center_horizontal"
+                    android:text="Already Registered? Login" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/numberLL"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/backToNepLL"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="8dp"
+                        app:srcCompat="@drawable/baseline_arrow_back_24" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dimen_8dp"
+                        android:fontFamily="@font/poppins_regular"
+                        android:gravity="center_horizontal"
+                        android:text="Register Yourself on Safety"
+                        android:textColor="@color/cardview_dark_background"
+                        android:textSize="@dimen/dimen_20sp" />
+                </LinearLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/phoneNumberLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_8dp"
+                    android:hint="Your Phone Number"
+                    app:boxCornerRadiusTopEnd="@dimen/text_input_layout_corner"
+                    app:boxCornerRadiusTopStart="@dimen/text_input_layout_corner"
+                    app:boxStrokeColor="@color/app_light_color"
+                    app:cursorColor="@color/app_light_color"
+                    app:endIconMode="clear_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:inputType="number"
+                        android:scrollHorizontally="true"
+                        android:id="@+id/phoneNumber"
+                        android:singleLine="true"
+                        android:textSize="14sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_8dp"
+                    android:clickable="true"
+                    android:descendantFocusability="blocksDescendants"
+                    android:focusable="true"
+                    android:hint="Trusted Contact Number"
+                    app:boxCornerRadiusTopEnd="@dimen/text_input_layout_corner"
+                    app:boxCornerRadiusTopStart="@dimen/text_input_layout_corner"
+                    app:boxStrokeColor="@color/app_light_color"
+                    app:cursorColor="@color/app_light_color">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/trustedContactNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:cursorVisible="false"
+                        android:drawableEnd="@drawable/ic_contact_picker"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false"
+                        android:fontFamily="@font/poppins_regular"
+                        android:scrollHorizontally="true"
+                        android:singleLine="true"
+                        android:textSize="14sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/tilOrganization"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_8dp"
+                    android:hint="Organization"
+                    android:textSize="14sp"
+                    app:boxCornerRadiusTopEnd="@dimen/text_input_layout_corner"
+                    app:boxCornerRadiusTopStart="@dimen/text_input_layout_corner"
+                    app:boxStrokeColor="@color/app_light_color"
+                    app:cursorColor="@color/app_light_color"
+
+                    app:endIconMode="clear_text">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_regular"
+                        android:imeOptions="actionDone"
+                        android:inputType="textCapWords"
+                        android:scrollHorizontally="true"
+                        android:singleLine="true"
+                        android:textSize="14sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/nextToPinLL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="36dp"
+                    android:layout_marginBottom="@dimen/dimen_10dp"
+                    android:backgroundTint="@color/app_color"
+                    android:paddingHorizontal="54dp"
+                    android:paddingVertical="@dimen/dimen_10dp"
+                    android:src="@drawable/baseline_navigate_next_24"
+                    app:rippleColor="@color/app_light_color"
+                    app:tint="@color/white" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/pinLL"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/backToNumberLL"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="8dp"
+                        app:srcCompat="@drawable/baseline_arrow_back_24" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dimen_8dp"
+                        android:fontFamily="@font/poppins_regular"
+                        android:gravity="center_horizontal"
+                        android:text="Security PIN"
+                        android:textColor="@color/cardview_dark_background"
+                        android:textSize="@dimen/dimen_20sp" />
+
+                </LinearLayout>
+                  <LinearLayout
+                    android:id="@+id/pinContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/dimen_8dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/pin1"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_margin="16dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/otp_box"
+                        android:fontFamily="@font/poppins_regular"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:maxLength="1"
+                        android:padding="4dp"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/pin2"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_margin="16dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/otp_box"
+                        android:fontFamily="@font/poppins_regular"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:maxLength="1"
+                        android:padding="4dp"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/pin3"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_margin="16dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/otp_box"
+                        android:fontFamily="@font/poppins_regular"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:maxLength="1"
+                        android:padding="4dp"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/pin4"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_margin="16dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/otp_box"
+                        android:fontFamily="@font/poppins_regular"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:maxLength="1"
+                        android:padding="4dp"
+                        android:textSize="18sp" />
+
+                    <EditText
+                        android:id="@+id/pin5"
+                        android:layout_width="0dp"
+                        android:layout_height="48dp"
+                        android:layout_margin="16dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/otp_box"
+                        android:fontFamily="@font/poppins_regular"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:maxLength="1"
+                        android:padding="4dp"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/RegisterBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="36dp"
+                    android:backgroundTint="@color/app_color"
+                    android:fontFamily="@font/poppins_regular"
+                    android:paddingHorizontal="54dp"
+                    android:paddingVertical="@dimen/dimen_10dp"
+                    android:shadowColor="@color/black"
+                    android:text="Register"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/dimen_14sp"
+                    app:cornerRadius="14dp" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+</FrameLayout>

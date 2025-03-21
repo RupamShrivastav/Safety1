@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cvModel"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_150dp"
+        android:layout_margin="16dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="8dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/rlModel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <ImageView
+                android:id="@+id/imgModel"
+                android:layout_width="90dp"
+                android:layout_height="75dp"
+                android:layout_marginStart="@dimen/dimen_16dp"
+                android:src="@drawable/ic_male_person"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.186" />
+
+            <TextView
+                android:id="@+id/nameModel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_16dp"
+                android:fontFamily="@font/poppins_regular"
+                android:textColor="@color/grey"
+                android:textSize="@dimen/dimen_18sp"
+                app:layout_constraintStart_toEndOf="@+id/imgModel"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="@string/app_name" />
+
+            <TextView
+                android:id="@+id/addModel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:fontFamily="@font/poppins_extra_light_italic"
+                android:maxLines="2"
+                android:text="com.google.android.material.card.MaterialCardView
+    com.google.android.material.card.MaterialCardView
+    com.google.android.material.card.MaterialCardView
+    com.google.android.material.card.MaterialCardView"
+                android:textColor="@color/grey"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imgModel"
+                app:layout_constraintTop_toBottomOf="@+id/nameModel" />
+
+            <LinearLayout
+                android:id="@+id/notBar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/addModel">
+
+                <ImageView
+                    android:id="@+id/batteryModel"
+                    android:layout_width="44dp"
+                    android:layout_height="28dp"
+                    android:layout_marginStart="@dimen/dimen_4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/round_leftcorner"
+                    android:src="@drawable/ic_battery" />
+
+                <TextView
+                    android:id="@+id/batPerModel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+
+                    android:layout_marginEnd="@dimen/dimen_4dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/round_rightcorner"
+                    android:fontFamily="@font/poppins_semi_bold"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dimen_14sp"
+                    android:textStyle="bold"
+                    tools:text="69%" />
+
+
+                <ImageView
+                    android:id="@+id/wifiImgModel"
+                    android:layout_width="44dp"
+                    android:layout_height="28dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_wifi"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/wifiTModel"
+                    app:layout_constraintTop_toBottomOf="@+id/addModel"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <TextView
+                    android:id="@+id/connectionTvModel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/poppins_semi_bold"
+                    android:gravity="center_vertical"
+                    android:text="WIFI"
+                    android:textColor="@color/green"
+                    android:textSize="@dimen/dimen_14sp"
+                    app:layout_constraintTop_toBottomOf="@+id/addModel" />
+
+
+                <ImageView
+                    android:id="@+id/callImgModel"
+                    android:layout_width="46dp"
+                    android:layout_height="28dp"
+                    android:layout_weight="1"
+                    android:src="@drawable/ic_call" />
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</RelativeLayout>

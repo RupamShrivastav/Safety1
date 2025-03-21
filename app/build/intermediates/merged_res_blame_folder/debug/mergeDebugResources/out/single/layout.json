@@ -1,0 +1,54 @@
+[
+    {
+        "merged": "com.example.safety.app-mergeDebugResources-41:/layout/activity_login_user.xml",
+        "source": "com.example.safety.app-main-44:/layout/activity_login_user.xml"
+    },
+    {
+        "merged": "com.example.safety.app-mergeDebugResources-41:/layout/fragment_profile.xml",
+        "source": "com.example.safety.app-main-44:/layout/fragment_profile.xml"
+    },
+    {
+        "merged": "com.example.safety.app-mergeDebugResources-41:/layout/update_security_pin_dialog.xml",
+        "source": "com.example.safety.app-main-44:/layout/update_security_pin_dialog.xml"
+    },
+    {
+        "merged": "com.example.safety.app-mergeDebugResources-41:/layout/sos_dialog_box.xml",
+        "source": "com.example.safety.app-main-44:/layout/sos_dialog_box.xml"
+    },
+    {
+        "merged": "com.example.safety.app-mergeDebugResources-41:/layout/update_phone_number_dialog.xml",
+        "source": "com.example.safety.app-main-44:/layout/update_phone_number_dialog.xml"
+    },
+    {
+        "merged": "com.example.safety.app-mergeDebugResources-41:/layout/activity_main.xml",
+        "source": "com.example.safety.app-main-44:/layout/activity_main.xml"
+    },
+    {
+        "merged": "com.example.safety.app-mergeDebugResources-41:/layout/activity_register_user.xml",
+        "source": "com.example.safety.app-main-44:/layout/activity_register_user.xml"
+    },
+    {
+        "merged": "com.example.safety.app-mergeDebugResources-41:/layout/model.xml",
+        "source": "com.example.safety.app-main-44:/layout/model.xml"
+    },
+    {
+        "merged": "com.example.safety.app-mergeDebugResources-41:/layout/update_name_dialog.xml",
+        "source": "com.example.safety.app-main-44:/layout/update_name_dialog.xml"
+    },
+    {
+        "merged": "com.example.safety.app-mergeDebugResources-41:/layout/update_password_dialog.xml",
+        "source": "com.example.safety.app-main-44:/layout/update_password_dialog.xml"
+    },
+    {
+        "merged": "com.example.safety.app-mergeDebugResources-41:/layout/fragment_home.xml",
+        "source": "com.example.safety.app-main-44:/layout/fragment_home.xml"
+    },
+    {
+        "merged": "com.example.safety.app-mergeDebugResources-41:/layout/fragment_maps.xml",
+        "source": "com.example.safety.app-main-44:/layout/fragment_maps.xml"
+    },
+    {
+        "merged": "com.example.safety.app-mergeDebugResources-41:/layout/fragment_service.xml",
+        "source": "com.example.safety.app-main-44:/layout/fragment_service.xml"
+    }
+]
