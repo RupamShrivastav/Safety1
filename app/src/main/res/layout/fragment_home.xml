@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -8,10 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".fragments.HomeFragment">
 
+    <!-- Progress Indicator -->
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:indeterminate="true"
         app:indicatorColor="@color/app_color"
@@ -19,18 +18,18 @@
         app:trackColor="@color/app_light_color"
         app:trackCornerRadius="@dimen/dimen_10dp" />
 
+    <!-- Main Content -->
     <RelativeLayout
         android:id="@+id/mainContent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
+        <!-- Title -->
         <TextView
             android:id="@+id/textFam"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_marginStart="0dp"
             android:layout_marginTop="5dp"
             android:fontFamily="@font/poppins_semi_bold"
             android:gravity="center_horizontal"
@@ -38,15 +37,17 @@
             android:textColor="@color/black"
             android:textSize="24sp" />
 
+        <!-- RecyclerView for User List -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvHome"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/cvHomeHorz"
+            android:layout_height="0dp"
             android:layout_below="@+id/textFam"
+            android:layout_above="@+id/cvHomeHorz"
             android:layout_marginBottom="20dp"
             tools:listitem="@layout/model" />
 
+        <!-- Bottom CardView (Currently Empty) -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cvHomeHorz"
             android:layout_width="match_parent"
@@ -58,7 +59,8 @@
             app:cardCornerRadius="@dimen/dimen_8dp"
             app:cardElevation="@dimen/dimen_8dp">
 
+            <!--  You can add content here if needed -->
+
         </com.google.android.material.card.MaterialCardView>
     </RelativeLayout>
-
 </FrameLayout>

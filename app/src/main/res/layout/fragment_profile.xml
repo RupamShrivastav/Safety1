@@ -4,20 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="@color/white"
-    android:orientation="vertical"
-    tools:context=".fragments.HomeFragment">
+    android:fillViewport="true"
+    tools:context=".fragments.ProfileFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Profile Header -->
         <TextView
             android:id="@+id/tVProfile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_marginTop="@dimen/dimen_4dp"
             android:layout_marginBottom="@dimen/dimen_10dp"
             android:fontFamily="@font/poppins_semi_bold"
@@ -26,10 +25,10 @@
             android:textColor="@color/black"
             android:textSize="24sp" />
 
-
+        <!-- Profile Picture and Basic Info -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/dimen_16dp"
             android:layout_marginEnd="@dimen/dimen_16dp"
             app:cardBackgroundColor="@color/white"
@@ -40,15 +39,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="8dp">
 
                 <ImageView
                     android:id="@+id/profileImg"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
-                    android:layout_marginTop="@dimen/dimen_8dp"
-                    android:layout_marginBottom="@dimen/dimen_8dp"
-                    android:src="@drawable/ic_male_person" />
+                    android:layout_marginVertical="@dimen/dimen_8dp"
+                    android:src="@drawable/ic_male_person"
+                    android:contentDescription="@string/profile_image" />
 
                 <TextView
                     android:id="@+id/profileName"
@@ -58,7 +58,7 @@
                     android:gravity="center"
                     android:textColor="@color/black"
                     android:textSize="18sp"
-                    tools:text="@string/profile" />
+                    tools:text="User Name" />
 
                 <TextView
                     android:id="@+id/email"
@@ -68,48 +68,23 @@
                     android:gravity="center"
                     android:textColor="@color/cardview_dark_background"
                     android:textSize="14sp"
-                    tools:text="@string/profile" />
+                    tools:text="user@example.com" />
 
-
-                <TextView
-                    android:id="@+id/editProfile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableEnd="@drawable/baseline_edit_square_24"
-                    android:drawablePadding="4dp"
-                    android:fontFamily="@font/poppins_semi_bold"
-                    android:gravity="center"
-                    android:textSize="12sp"
-                    android:visibility="invisible"
-                    tools:text="Edit Profile" />
-
-
-                <TextView
-                    android:id="@+id/profileLoc"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:fontFamily="@font/poppins_extra_light_italic"
-                    android:gravity="center"
-                    android:maxLines="2"
-                    android:paddingBottom="@dimen/dimen_8dp"
-                    android:text="This will give your CardView a user-defined corner for only the bottom corners."
-                    android:textSize="@dimen/dimen_14sp"
-                    android:visibility="gone" />
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <!-- Profile Edit Options -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="@dimen/dimen_8dp"
             android:orientation="vertical"
             android:padding="4dp">
 
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="4dp"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="8dp"
@@ -118,7 +93,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:padding="@dimen/dimen_4dp">
 
@@ -127,22 +102,21 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_semi_bold"
                         android:padding="@dimen/dimen_4dp"
-                        android:textColor="@color/black"
-                        android:text="Edit Profile" />
-
+                        android:text="Edit Profile"
+                        android:textColor="@color/black" />
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:backgroundTint="@color/white"
                         app:cardCornerRadius="@dimen/dimen_8dp">
 
-
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:orientation="vertical">
 
+                            <!-- Update Name -->
                             <TextView
                                 android:id="@+id/updateName"
                                 android:layout_width="match_parent"
@@ -151,17 +125,20 @@
                                 android:layout_marginStart="8dp"
                                 android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
                                 android:fontFamily="@font/poppins_regular"
-                                android:gravity="start"
-                                android:textColor="@color/black"
+                                android:gravity="start|center_vertical"
                                 android:padding="@dimen/dimen_8dp"
                                 android:text="Name"
-                                android:textSize="16sp" />
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:drawablePadding="8dp"
+                                android:contentDescription="@string/update_name"/>
 
                             <com.google.android.material.divider.MaterialDivider
                                 android:layout_width="match_parent"
                                 android:layout_height="1dp"
-                                android:layout_marginHorizontal="8dp"/>
+                                android:layout_marginHorizontal="8dp" />
 
+                            <!-- Update Phone Number -->
                             <TextView
                                 android:id="@+id/updateNumber"
                                 android:layout_width="match_parent"
@@ -170,17 +147,20 @@
                                 android:layout_marginStart="8dp"
                                 android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
                                 android:fontFamily="@font/poppins_regular"
-                                android:gravity="start"
+                                android:gravity="start|center_vertical"
                                 android:padding="@dimen/dimen_8dp"
-                                android:textColor="@color/black"
                                 android:text="Phone Number"
-                                android:textSize="16sp" />
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:drawablePadding="8dp"
+                                android:contentDescription="@string/update_phone_number"/>
 
                             <com.google.android.material.divider.MaterialDivider
                                 android:layout_width="match_parent"
                                 android:layout_height="1dp"
-                                android:layout_marginHorizontal="8dp"/>
+                                android:layout_marginHorizontal="8dp" />
 
+                            <!-- Update Password -->
                             <TextView
                                 android:id="@+id/updatePassword"
                                 android:layout_width="match_parent"
@@ -189,17 +169,20 @@
                                 android:layout_marginStart="8dp"
                                 android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
                                 android:fontFamily="@font/poppins_regular"
-                                android:gravity="start"
+                                android:gravity="start|center_vertical"
                                 android:padding="@dimen/dimen_8dp"
-                                android:textColor="@color/black"
                                 android:text="Password"
-                                android:textSize="16sp" />
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:drawablePadding="8dp"
+                                android:contentDescription="@string/update_password"/>
 
                             <com.google.android.material.divider.MaterialDivider
                                 android:layout_width="match_parent"
                                 android:layout_height="1dp"
-                                android:layout_marginHorizontal="8dp"/>
+                                android:layout_marginHorizontal="8dp" />
 
+                            <!-- Update PIN -->
                             <TextView
                                 android:id="@+id/updatePin"
                                 android:layout_width="match_parent"
@@ -208,81 +191,72 @@
                                 android:layout_marginStart="8dp"
                                 android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
                                 android:fontFamily="@font/poppins_regular"
-                                android:gravity="start"
+                                android:gravity="start|center_vertical"
                                 android:padding="@dimen/dimen_8dp"
-                                android:textColor="@color/black"
                                 android:text="Security PIN"
-                                android:textSize="16sp" />
+                                android:textColor="@color/black"
+                                android:textSize="16sp"
+                                android:drawablePadding="8dp"
+                                android:contentDescription="@string/update_security_pin"/>
+
                             <com.google.android.material.divider.MaterialDivider
                                 android:layout_width="match_parent"
                                 android:layout_height="1dp"
-                                android:layout_marginHorizontal="8dp"/>
+                                android:layout_marginHorizontal="8dp" />
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:orientation="vertical">
+                            <!-- Trusted Contact -->
+                            <LinearLayout
+                                android:id="@+id/guardNum"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:paddingVertical="@dimen/dimen_8dp"
+                                android:baselineAligned="false">
 
-                                    <LinearLayout
-                                        android:id="@+id/guardNum"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:orientation="horizontal"
-                                        android:weightSum="5">
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginStart="8dp"
+                                    android:layout_weight="1"
+                                    android:fontFamily="@font/poppins_regular"
+                                    android:gravity="start|center_vertical"
+                                    android:text="Trusted Contact"
+                                    android:textColor="@color/black"
+                                    android:textSize="16sp"
+                                    />
 
+                                <TextView
+                                    android:id="@+id/trustedContactNameProfile"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginEnd="4dp"
+                                    android:fontFamily="@font/poppins_regular"
+                                    android:gravity="end"
+                                    android:textColor="@color/black"
+                                    android:textSize="16sp"
+                                    tools:text="Trusted Contact Name" />
 
-                                        <TextView
-                                            android:layout_width="0dp"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="center_vertical"
-                                            android:layout_weight="2.25"
-                                            android:textColor="@color/black"
-                                            android:fontFamily="@font/poppins_regular"
-                                            android:gravity="start"
-                                            android:padding="@dimen/dimen_8dp"
-                                            android:layout_marginStart="8dp"
-                                            android:text="Trusted Contact"
-                                            android:textSize="16sp" />
-
-                                        <TextView
-                                            android:id="@+id/trustedContactNameProfile"
-                                            android:layout_width="0dp"
-                                            android:layout_height="wrap_content"
-                                            android:layout_gravity="center_vertical"
-                                            android:layout_weight="2.25"
-                                            android:fontFamily="@font/poppins_regular"
-                                            android:gravity="end"
-                                            android:padding="@dimen/dimen_8dp"
-                                            android:textColor="@color/black"
-                                            android:textSize="16sp"
-                                            tools:text="Trusted " />
-
-                                        <ImageView
-                                            android:layout_width="0dp"
-                                            android:layout_height="20dp"
-                                            android:layout_gravity="center_vertical"
-                                            android:layout_weight=".5"
-                                            android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
-                                    </LinearLayout>
-
-
-                                </LinearLayout>
-
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="20dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:layout_marginEnd="8dp"
+                                    android:src="@drawable/ic_baseline_arrow_forward_ios_24" />
+                            </LinearLayout>
 
                         </LinearLayout>
 
                     </com.google.android.material.card.MaterialCardView>
-
-
                 </LinearLayout>
-
             </com.google.android.material.card.MaterialCardView>
 
-
+            <!-- Invite Contacts -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/inviteContacts"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="4dp"
                 android:layout_marginVertical="8dp"
                 android:backgroundTint="@color/white"
@@ -291,20 +265,21 @@
 
                 <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="9"
+                    android:layout_height="wrap_content"
                     android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
                     android:fontFamily="@font/poppins_regular"
                     android:padding="12dp"
-                    android:textColor="@color/black"
                     android:text="Invite Contacts"
-                    android:textSize="16sp" />
-
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:drawablePadding="8dp"
+                    android:contentDescription="@string/invite_contacts"/>
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Sign Out -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="4dp"
                 android:layout_marginVertical="8dp"
                 android:backgroundTint="@color/white"
@@ -314,20 +289,16 @@
                 <TextView
                     android:id="@+id/signout"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:padding="12dp"
-                    android:layout_weight="9"
+                    android:layout_height="wrap_content"
                     android:drawableEnd="@drawable/ic_baseline_arrow_forward_ios_24"
                     android:fontFamily="@font/poppins_regular"
-                    android:textColor="@color/black"
+                    android:padding="12dp"
                     android:text="Sign Out"
-                    android:textSize="16sp" />
-
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:drawablePadding="8dp"
+                    android:contentDescription="@string/sign_out"/>
             </com.google.android.material.card.MaterialCardView>
-
-
         </LinearLayout>
-
-
     </LinearLayout>
 </ScrollView>

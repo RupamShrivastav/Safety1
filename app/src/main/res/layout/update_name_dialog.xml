@@ -102,9 +102,6 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/dimen_14sp"
                 app:cornerRadius="14dp" />
-
         </LinearLayout>
-
     </LinearLayout>
-
 </com.google.android.material.card.MaterialCardView>

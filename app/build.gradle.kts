@@ -80,9 +80,39 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.firebase.firestore)
     implementation(libs.play.services.location)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.core.ktx)
+    implementation(libs.androidx.junit.ktx)
+
+    // JUnit
+    testImplementation("junit:junit:4.13.2")
+
+    // AndroidX Test - Core, Runner, and Rules
+    androidTestImplementation("androidx.test:core:1.6.1")
+    androidTestImplementation("androidx.test.ext:junit:1.2.1")
+    androidTestImplementation("androidx.test:runner:1.6.2")
+    androidTestImplementation("androidx.test:rules:1.6.1")
+
+    // Espresso for UI testing
+    testImplementation("androidx.test.espresso:espresso-core:3.6.1")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.6.1")
+
+    testImplementation("androidx.test.espresso:espresso-intents:3.6.1")
+    androidTestImplementation("androidx.test.espresso:espresso-intents:3.6.1")
+
+    // Mockito for mocking API calls
+    testImplementation("org.mockito:mockito-core:4.5.1")
+    androidTestImplementation("org.mockito:mockito-android:4.5.1")
+
+    testImplementation("org.mockito.kotlin:mockito-kotlin:4.1.0")
+    testImplementation("org.mockito:mockito-inline:3.12.4")
+
+// Add PowerMock (for mocking static methods)
+    testImplementation ("org.powermock:powermock-module-junit4:2.0.9")
+    testImplementation ("org.powermock:powermock-api-mockito2:2.0.9")
+    // Coroutine Testing
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1")
+    androidTestImplementation("org.robolectric:robolectric:4.14")
+    testImplementation("androidx.arch.core:core-testing:2.1.0")
 
     implementation (libs.mappls.android.sdk)
     implementation (libs.retrofit)

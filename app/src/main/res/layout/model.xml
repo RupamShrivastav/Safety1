@@ -51,10 +51,7 @@
                 android:ellipsize="end"
                 android:fontFamily="@font/poppins_extra_light_italic"
                 android:maxLines="2"
-                android:text="com.google.android.material.card.MaterialCardView
-    com.google.android.material.card.MaterialCardView
-    com.google.android.material.card.MaterialCardView
-    com.google.android.material.card.MaterialCardView"
+                android:text=""
                 android:textColor="@color/grey"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -83,7 +80,6 @@
                     android:id="@+id/batPerModel"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-
                     android:layout_marginEnd="@dimen/dimen_4dp"
                     android:layout_weight="1"
                     android:background="@drawable/round_rightcorner"
@@ -93,7 +89,6 @@
                     android:textSize="@dimen/dimen_14sp"
                     android:textStyle="bold"
                     tools:text="69%" />
-
 
                 <ImageView
                     android:id="@+id/wifiImgModel"
@@ -118,7 +113,6 @@
                     android:textSize="@dimen/dimen_14sp"
                     app:layout_constraintTop_toBottomOf="@+id/addModel" />
 
-
                 <ImageView
                     android:id="@+id/callImgModel"
                     android:layout_width="46dp"
@@ -126,9 +120,6 @@
                     android:layout_weight="1"
                     android:src="@drawable/ic_call" />
             </LinearLayout>
-
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
-
 </RelativeLayout>

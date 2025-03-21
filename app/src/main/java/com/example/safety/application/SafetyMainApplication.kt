@@ -15,7 +15,6 @@ class SafetyMainApplication : Application() {
 
     /**
      * Called when the application is first created.
-     * This is where we initialize third-party SDKs and global settings.
      */
     override fun onCreate() {
         super.onCreate()

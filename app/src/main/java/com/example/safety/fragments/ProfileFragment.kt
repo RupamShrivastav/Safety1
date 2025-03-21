@@ -10,24 +10,24 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import com.example.safety.R
-import com.example.safety.common.Constants
 import com.example.safety.activity.LoginUserActivity
-import com.example.safety.common.SharedPrefFile
+import com.example.safety.api.ApiService
 import com.example.safety.api.RetrofitInstance
+import com.example.safety.common.Constants
+import com.example.safety.common.SharedPrefFile
 import com.example.safety.databinding.FragmentProfileBinding
 import com.example.safety.databinding.UpdateNameDialogBinding
 import com.example.safety.databinding.UpdatePasswordDialogBinding
@@ -40,8 +40,6 @@ import com.example.safety.models.UpdatePhoneNumberRequest
 import com.example.safety.models.UpdateSecurityPinRequest
 import com.example.safety.models.UpdateTrustedContactRequest
 import com.example.safety.models.UserModelItem
-import com.google.android.material.button.MaterialButton
-import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import org.json.JSONObject
@@ -51,224 +49,172 @@ import retrofit2.Response
 
 /**
  * ProfileFragment
+ * Displays and allows editing of user profile information.
  */
 class ProfileFragment : Fragment() {
 
-    // Request code for contacts permission
-    private val READ_CONTACTS_PERMISSION_REQUEST = 1
+    private val TAG = "ProfileFragment" // Constant for logging
+    private val READ_CONTACTS_PERMISSION_REQUEST = 1 // Permission request code
 
-    // View binding for accessing UI elements
-    lateinit var binding: FragmentProfileBinding
+    private lateinit var binding: FragmentProfileBinding // View binding
+    private lateinit var pickContactLauncher: ActivityResultLauncher<Intent> // Contact picker
+    private lateinit var apiService: ApiService // Retrofit API service
+    private lateinit var db: FirebaseFirestore // Firestore instance
+    private lateinit var sharedPref: SharedPrefFile // Shared preferences
+    private lateinit var currentUser: UserModelItem // Currently logged-in user
 
-    // Launcher for contact picker
-    private lateinit var pickContactLauncher: ActivityResultLauncher<Intent>
+    private var phoneNum = "" // Selected contact phone number
+    private var name = "" // Selected contact name
 
-    private val retrofit = RetrofitInstance.initialize()
-    private lateinit var db: FirebaseFirestore
-
-    // Variables to store selected contact details
-    var phoneNum = ""
-    var name = ""
-
-    // Shared Preferences instance
-    val sharedPref = SharedPrefFile
-    lateinit var currentUser: UserModelItem
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = FragmentProfileBinding.inflate(inflater, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        binding = FragmentProfileBinding.inflate(inflater, container, false) // Inflate layout
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize shared preferences and retrieve user data
-        sharedPref.init(requireContext())
-        db = FirebaseFirestore.getInstance()
-        currentUser = sharedPref.getUserData(Constants.SP_USERDATA)!!
+        initDependencies()  // Initialize dependencies
+        loadUserData()  // Load and display user data
+        setupContactPicker()  // Set up contact picker
+        setupClickListeners() // Set up click listeners for buttons
+    }
 
-        // Display user profile data
+    // Initializes dependencies.
+    private fun initDependencies() {
+        apiService = RetrofitInstance.apiService // Initialize Retrofit API service.
+        sharedPref = SharedPrefFile // Initialize SharedPref.
+        sharedPref.init(requireContext())// Initialize shared preferences
+        db = FirebaseFirestore.getInstance() // Initialize Firestore
+    }
+
+    // Loads and displays user data.
+    private fun loadUserData() {
+        currentUser = sharedPref.getUserData(Constants.SP_USERDATA) ?: run { //Elvis Operator used
+            // Handle the case where user data is not found (e.g., not logged in).
+            Log.e(TAG, "User data not found in SharedPreferences")
+            // Redirect to login or show an error message.
+            // For example:
+            startActivity(Intent(requireContext(), LoginUserActivity::class.java))
+            requireActivity().finish() // Finish current activity, prevent further action.
+            return // Return to prevent further execution.
+        }
+
+        // Display user profile data.
         binding.profileName.text = currentUser.fullName
         binding.email.text = currentUser.email
         binding.trustedContactNameProfile.text = currentUser.trustedContactName
 
-        Log.d("${Constants.TAG} ProfileFragment", "name ${currentUser.trustedContactName}")
-        Log.d("${Constants.TAG} ProfileFragment", "User data: ${currentUser}")
+        Log.d(TAG, "User data loaded: $currentUser")
+    }
 
-        // Register contact picker activity
+    // Sets up the contact picker launcher.
+    private fun setupContactPicker() {
         pickContactLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
                 if (result.resultCode == Activity.RESULT_OK) {
-                    val data: Intent? = result.data
-                    handleContactResult(data) // Handle selected contact
+                    handleContactResult(result.data) // Handle selected contact
+                }
+            }
+    }
+
+    // Sets up click listeners for various UI elements.
+    private fun setupClickListeners() {
+        binding.apply { // Scoped to avoid repeating 'binding.'
+            updateName.setOnClickListener { showUpdateNameDialog(currentUser) } // Name update
+            updateNumber.setOnClickListener { showUpdatePhoneNumberDialog(currentUser) } // Phone update
+            updatePassword.setOnClickListener { showUpdatePasswordDialog(currentUser) } // Password update
+            updatePin.setOnClickListener { showUpdatePinDialog(currentUser) } // PIN update
+            guardNum.setOnClickListener { pickContact() } // Select trusted contact
+            inviteContacts.setOnClickListener { sendInvite() } // Invite contacts
+            signout.setOnClickListener { signOut() } // Sign out
+        }
+    }
+
+    // Shows the dialog for updating the user's name.
+    private fun showUpdateNameDialog(currentUser: UserModelItem) {
+        val dialogBinding = UpdateNameDialogBinding.inflate(layoutInflater)
+        val dialog = Dialog(requireContext()).apply {
+            setContentView(dialogBinding.root)
+            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            window?.setLayout(
+                (resources.displayMetrics.widthPixels * 0.95).toInt(),
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            show()
+        }
+
+        dialogBinding.currentName.text = currentUser.fullName
+
+        dialogBinding.updateNameBtn.setOnClickListener {
+            val newName = dialogBinding.updatedFullName.editText?.text?.toString()?.trim() ?: ""
+
+            if (newName.isBlank()) { // Check if name is not null, empty or just whitespace characters
+                dialogBinding.updatedFullName.error = "Name cannot be empty" // Show error on TextInputLayout
+                return@setOnClickListener // Prevent further action
+            }
+            dialogBinding.updatedFullName.error = null // Clear previous error
+
+            updateUserName(newName, dialog) // Call the update function
+
+        }
+
+        dialogBinding.cancelBtn.setOnClickListener {
+            dialog.dismiss()
+        }
+    }
+
+
+    // Function to make the API Call to update User Name.
+    private fun updateUserName(newName: String, dialog: Dialog){
+
+        apiService.updateUserFullName(
+            updateNameModel = UpdateNameRequest(currentUser.email, newName)
+        ).enqueue(object : Callback<APIResponseModel> {
+            override fun onResponse(
+                call: Call<APIResponseModel>,
+                response: Response<APIResponseModel>,
+            ) {
+                if (response.isSuccessful) {
+                    handleNameUpdateSuccess(response, newName) // Handle success
+                    dialog.dismiss() //Dismiss on Success
+
+                } else {
+                    handleUpdateError(response) // Handle API errors
                 }
             }
 
-        binding.updateName.setOnClickListener {
-            Log.d("${Constants.TAG} ProfileFragment", " Update Name clicked")
-            showUpdateNameDialog(currentUser)
-        }
-
-        binding.updateNumber.setOnClickListener {
-            Log.d("${Constants.TAG} ProfileFragment", " Update Phone Number clicked")
-            showUpdatePhoneNumberDialog(currentUser)
-        }
-
-        binding.updatePassword.setOnClickListener {
-            Log.d("${Constants.TAG} ProfileFragment", " Update Password clicked")
-            showUpdatePasswordDialog(currentUser)
-        }
-
-        binding.updatePin.setOnClickListener {
-            Log.d("${Constants.TAG} ProfileFragment", " Update PIN clicked")
-            showUpdatePinDialog(currentUser)
-        }
-
-        // Click listener for selecting a trusted contact
-        binding.guardNum.setOnClickListener {
-            pickContact()
-            Log.d("${Constants.TAG} Update Trusted Contacts ", "Updated $name $phoneNum")
-        }
-
-        // Click listener for inviting contacts
-        binding.inviteContacts.setOnClickListener {
-            sendInvite()
-        }
-
-        // Click listener for signing out
-        binding.signout.setOnClickListener {
-            Log.d(Constants.TAG, "Before Signout ${sharedPref.getUserData(Constants.SP_USERDATA)}")
-
-            // Clear user session and redirect to login screen
-            sharedPref.putLoggedInfo(Constants.SP_LOGGED_INFO, false)
-            Log.d(Constants.TAG, "Signed Out !!!")
-            sharedPref.clearAllData()
-            Log.d(Constants.TAG, "After Signout ${sharedPref.getUserData(Constants.SP_USERDATA)}")
-
-            val intent = Intent(requireContext(), LoginUserActivity::class.java)
-            Toast.makeText(requireContext(),"Signed Out",Toast.LENGTH_SHORT).show()
-            startActivity(intent)
-            activity?.finishAffinity()
-        }
-
-    }
-
-    private fun showUpdateNameDialog(currentUser: UserModelItem) {
-        val binding = UpdateNameDialogBinding.inflate(LayoutInflater.from(requireContext()))
-        val dialog = Dialog(requireContext())
-        dialog.apply {
-            setContentView(binding.root)
-            window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-            window?.setLayout(
-                (resources.displayMetrics.widthPixels * 0.95).toInt(),
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            show()
-        }
-        binding.currentName.text = currentUser.fullName
-
-        Log.d("${Constants.TAG} ProfileFragment", "Name ${currentUser.fullName} ")
-
-        binding.updateNameBtn.setOnClickListener {
-            val newName = binding.updatedFullName.editText?.text.toString()
-            Log.d("${Constants.TAG} ProfileFragment", "Name ${currentUser.fullName}  $newName")
-
-            if (newName.isEmpty()) {
-                Toast.makeText(requireContext(), "Name cannot be empty", Toast.LENGTH_SHORT)
-                    .show()
-//                    return@setOnClickListener
-            } else {
-                retrofit.updateUserFullName(
-                    updateNameModel = UpdateNameRequest(currentUser.email, newName)
-                ).enqueue(object : Callback<APIResponseModel> {
-                    override fun onResponse(
-                        call: Call<APIResponseModel>,
-                        response: Response<APIResponseModel>,
-                    ) {
-
-                        Log.d("${Constants.TAG} ProfileFragment", "${response}")
-
-                        try {
-                            if (response.isSuccessful) {  //  Handles 200-299
-                                Toast.makeText(
-                                    requireContext(),
-                                    response.body()!!.message,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                sharedPref.putUserData(
-                                    Constants.SP_USERDATA,
-                                    currentUser.copy(
-                                        fullName = newName
-                                    )
-                                )
-                                val data = hashMapOf<String, Any>()
-                                data["name"] = newName
-
-                                if (data.isNotEmpty()) {
-                                    db.collection(Constants.FIRESTORE_COLLECTION)
-                                        .document(currentUser.email)
-                                        .set(data, SetOptions.merge())
-                                        .addOnSuccessListener {
-                                            Log.d(
-                                                " ${Constants.TAG} FirestoreUpdate",
-                                                "Successfully updated data"
-                                            )
-                                        }
-                                        .addOnFailureListener { e ->
-                                            Log.e(
-                                                "${Constants.TAG} FirestoreUpdate",
-                                                "Failed to update data",
-                                                e
-                                            )
-                                        }
-                                }
-                                dialog.dismiss()
-                            } else {  // Handles 400, 404, 500
-                                val errorMessage =
-                                    JSONObject(response.errorBody()?.string().toString()).getString(
-                                        "message"
-                                    ) ?: "Unknown error"
-                                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                        } catch (e: Exception) {
-                            Log.e(
-                                "${Constants.TAG} ProfileFragment",
-                                "Error processing response: ${e.message}"
-                            )
-                            Toast.makeText(
-                                requireContext(),
-                                "Something went wrong!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-
-                    override fun onFailure(call: Call<APIResponseModel>, t: Throwable) {
-                        Log.d("${Constants.TAG} ProfileFragment", "${t.message}")
-
-                    }
-                })
+            override fun onFailure(call: Call<APIResponseModel>, t: Throwable) {
+                handleUpdateFailure(t) // Handle network failure
             }
-        }
-
-        binding.cancelBtn.setOnClickListener {
-            dialog.dismiss()
-        }
-
+        })
     }
 
+    // Handles a successful name update.
+    private fun handleNameUpdateSuccess(response: Response<APIResponseModel>, newName: String) {
+        Toast.makeText(requireContext(), response.body()?.message ?: "Name updated", Toast.LENGTH_SHORT).show() // Toast the message from response
+        sharedPref.putUserData(
+            Constants.SP_USERDATA,
+            currentUser.copy(fullName = newName)
+        ) // Update SharedPreferences
+        currentUser = currentUser.copy(fullName = newName) // Update the local currentUser object
+        binding.profileName.text = newName // Update the name on the profile screen immediately
+
+        // Update name in Firestore
+        val data = hashMapOf<String, Any>("name" to newName) // Only update the name field
+        db.collection(Constants.FIRESTORE_COLLECTION)
+            .document(currentUser.email)
+            .set(data, SetOptions.merge()) // Merge to avoid overwriting other fields
+            .addOnSuccessListener { Log.d(TAG, "Firestore name updated successfully") }
+            .addOnFailureListener { e -> Log.e(TAG, "Firestore name update failed", e) }
+    }
+
+
+    // Shows the dialog for updating the user's phone number.
     private fun showUpdatePhoneNumberDialog(currentUser: UserModelItem) {
-        val binding = UpdatePhoneNumberDialogBinding.inflate(LayoutInflater.from(requireContext()))
+        val dialogBinding = UpdatePhoneNumberDialogBinding.inflate(layoutInflater)
         val dialog = Dialog(requireContext()).apply {
-            setContentView(binding.root)
+            setContentView(dialogBinding.root)
             window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             window?.setLayout(
                 (resources.displayMetrics.widthPixels * 0.95).toInt(),
@@ -276,104 +222,74 @@ class ProfileFragment : Fragment() {
             )
             show()
         }
+        dialogBinding.currentPhoneNumber.text = currentUser.phoneNumber
 
-        binding.currentPhoneNumber.text = currentUser.phoneNumber
-
-        binding.updatePhoneNumberBtn.setOnClickListener {
-            val new = binding.updatedPhoneNumber.editText?.text.toString()
-            Log.d(
-                "${Constants.TAG} ProfileFragment",
-                "Phone Number ${currentUser.phoneNumber}  $new"
-            )
-            if (new.isBlank()) {
-                Toast.makeText(requireContext(), "Name cannot be empty", Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                retrofit.updateUserPhoneNo(
-                    updatePhoneNumberRequest = UpdatePhoneNumberRequest(currentUser.email, new)
-                ).enqueue(object : Callback<APIResponseModel> {
-                    override fun onResponse(
-                        call: Call<APIResponseModel>,
-                        response: Response<APIResponseModel>,
-                    ) {
-
-                        Log.d("${Constants.TAG} ProfileFragment", "${response}")
-                        try {
-                            if (response.isSuccessful) {  //  Handles 200-299
-
-                                Toast.makeText(
-                                    requireContext(),
-                                    response.body()!!.message,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                sharedPref.putUserData(
-                                    Constants.SP_USERDATA,
-                                    currentUser.copy(
-                                        phoneNumber = Constants.normalizePhoneNumber(new) ?: "0000"
-                                    )
-                                )
-                                val data = hashMapOf<String, Any>()
-                                data["phoneNumber"] = new
-
-                                if (data.isNotEmpty()) {
-                                    db.collection(Constants.FIRESTORE_COLLECTION)
-                                        .document(currentUser.email)
-                                        .set(data, SetOptions.merge())
-                                        .addOnSuccessListener {
-                                            Log.d(
-                                                "${Constants.TAG} FirestoreUpdate",
-                                                "Successfully updated data"
-                                            )
-                                        }
-                                        .addOnFailureListener { e ->
-                                            Log.e(
-                                                "${Constants.TAG} FirestoreUpdate",
-                                                "Failed to update data",
-                                                e
-                                            )
-                                        }
-                                }
-                                dialog.dismiss()
-
-                            } else {  // Handles 400, 404, 500
-                                val errorMessage =
-                                    JSONObject(response.errorBody()?.string().toString()).getString(
-                                        "message"
-                                    ) ?: "Unknown error"
-                                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                        } catch (e: Exception) {
-                            Log.e(
-                                "${Constants.TAG} ProfileFragment",
-                                "Error processing response: ${e.message}"
-                            )
-                            Toast.makeText(
-                                requireContext(),
-                                "Something went wrong!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-
-                    override fun onFailure(call: Call<APIResponseModel>, t: Throwable) {
-                        Log.d("${Constants.TAG} ProfileFragment", "${t.message}")
-
-                    }
-                })
+        dialogBinding.updatePhoneNumberBtn.setOnClickListener {
+            val newNumber = dialogBinding.updatedPhoneNumber.editText?.text?.toString()?.trim() ?: ""
+            if (newNumber.isBlank() ) { // check for valid input
+                dialogBinding.updatedPhoneNumber.error = "Phone number cannot be empty"
+                return@setOnClickListener
             }
+            dialogBinding.updatedPhoneNumber.error = null
+            updateUserPhoneNumber(newNumber, dialog) // Update Phone Number.
         }
 
-        binding.cancelPhoneNumberBtn.setOnClickListener {
-            dialog.dismiss()
+        dialogBinding.cancelPhoneNumberBtn.setOnClickListener {
+            dialog.dismiss() // Dismiss dialog on cancel
         }
-
     }
 
+    // Function to make the API call to update Phone Number
+    private fun updateUserPhoneNumber(newNumber: String, dialog: Dialog){
+
+        apiService.updateUserPhoneNo(
+            updatePhoneNumberRequest = UpdatePhoneNumberRequest(currentUser.email, newNumber)
+        ).enqueue(object : Callback<APIResponseModel> {
+            override fun onResponse(
+                call: Call<APIResponseModel>,
+                response: Response<APIResponseModel>,
+            ) {
+                if (response.isSuccessful) { // Handle successful response
+                    handlePhoneNumberUpdateSuccess(response,newNumber)
+                    dialog.dismiss()
+
+                } else {
+                    handleUpdateError(response) // Handle API errors
+                }
+            }
+
+            override fun onFailure(call: Call<APIResponseModel>, t: Throwable) { // Handle failure
+                handleUpdateFailure(t)
+            }
+        })
+    }
+
+
+    // Handle Successful Phone Number Update
+    private fun handlePhoneNumberUpdateSuccess(response: Response<APIResponseModel>, newNumber: String){
+        Toast.makeText(requireContext(), response.body()?.message ?: "Phone number updated", Toast.LENGTH_SHORT).show()
+
+        sharedPref.putUserData(
+            Constants.SP_USERDATA,
+            currentUser.copy(phoneNumber = newNumber)
+        )  // Update SharedPreferences
+
+        currentUser = currentUser.copy(phoneNumber = newNumber) // Update the local currentUser
+
+        // Update number in Firestore
+        val data = hashMapOf<String, Any>("phoneNumber" to newNumber)
+        db.collection(Constants.FIRESTORE_COLLECTION)
+            .document(currentUser.email)
+            .set(data, SetOptions.merge())
+            .addOnSuccessListener { Log.d(TAG, "Firestore phone number updated successfully") }
+            .addOnFailureListener { e -> Log.e(TAG, "Firestore phone number update failed", e) }
+    }
+
+    // Shows the dialog for updating the user's password.
     private fun showUpdatePasswordDialog(currentUser: UserModelItem) {
-        val binding = UpdatePasswordDialogBinding.inflate(LayoutInflater.from(requireContext()))
+        val dialogBinding = UpdatePasswordDialogBinding.inflate(layoutInflater)
         val dialog = Dialog(requireContext()).apply {
-            setContentView(binding.root)
+            setContentView(dialogBinding.root)
             window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
             window?.setLayout(
                 (resources.displayMetrics.widthPixels * 0.95).toInt(),
@@ -382,80 +298,61 @@ class ProfileFragment : Fragment() {
             show()
         }
 
+        dialogBinding.updatePasswordBtn.setOnClickListener {
+            val oldPassword = dialogBinding.oldPassword.editText?.text?.toString()?.trim() ?: ""
+            val newPassword = dialogBinding.newPassword.editText?.text?.toString()?.trim() ?: ""
 
-        binding.updatePasswordBtn.setOnClickListener {
-            val old = binding.oldPassword.editText?.text.toString()
-            val new = binding.newPassword.editText?.text.toString()
-            Log.d(
-                "${Constants.TAG} ProfileFragment",
-                "Password ${currentUser.phoneNumber}  $new"
-            )
-            if (new.isBlank() || old.isBlank()) {
-                Toast.makeText(requireContext(), "Password cannot be empty", Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                retrofit.updateUserPassword(
-                    updatePasswordRequest = UpdatePasswordRequest(
-                        email = currentUser.email,
-                        oldPassword = old,
-                        newPassword = new
-                    )
-                ).enqueue(object : Callback<APIResponseModel> {
-                    override fun onResponse(
-                        call: Call<APIResponseModel>,
-                        response: Response<APIResponseModel>,
-                    ) {
-
-                        Log.d("${Constants.TAG} ProfileFragment", "$response")
-
-                        try {
-                            if (response.isSuccessful) {  //  Handles 200-299
-                                Toast.makeText(
-                                    requireContext(),
-                                    response.body()!!.message,
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                sharedPref.putUserData(
-                                    Constants.SP_USERDATA,
-                                    currentUser.copy(
-                                        phoneNumber = Constants.normalizePhoneNumber(new) ?: "0000"
-                                    )
-                                )
-                                dialog.dismiss()
-                            } else {  // Handles 400, 404, 500
-                                val errorMessage =
-                                    JSONObject(response.errorBody()?.string().toString()).getString(
-                                        "message"
-                                    ) ?: "Unknown error"
-                                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                        } catch (e: Exception) {
-                            Log.e(
-                                "${Constants.TAG} ProfileFragment",
-                                "Error processing response: ${e.message}"
-                            )
-                            Toast.makeText(
-                                requireContext(),
-                                "Something went wrong!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-
-                    override fun onFailure(call: Call<APIResponseModel>, t: Throwable) {
-                        Log.d("${Constants.TAG} ProfileFragment", "${t.message}")
-                    }
-                })
+            if (oldPassword.isBlank() || newPassword.isBlank()) {
+                if(oldPassword.isBlank()){
+                    dialogBinding.oldPassword.error = "Old password cannot be empty" // Set error
+                }
+                if (newPassword.isBlank()){
+                    dialogBinding.newPassword.error = "New password cannot be empty"
+                }
+                return@setOnClickListener // Exit if fields are empty
             }
+            dialogBinding.oldPassword.error = null // Clear the errors
+            dialogBinding.newPassword.error = null
+            updateUserPassword(oldPassword, newPassword, dialog) // Update password
         }
 
-        binding.cancelPasswordBtn.setOnClickListener {
-            dialog.dismiss()
+        dialogBinding.cancelPasswordBtn.setOnClickListener {
+            dialog.dismiss() // Dismiss dialog on cancel
         }
-
     }
 
+    private fun updateUserPassword(oldPassword: String, newPassword: String, dialog: Dialog){
+        apiService.updateUserPassword(
+            updatePasswordRequest = UpdatePasswordRequest(
+                email = currentUser.email,
+                oldPassword = oldPassword,
+                newPassword = newPassword
+            )
+        ).enqueue(object : Callback<APIResponseModel> {
+            override fun onResponse(
+                call: Call<APIResponseModel>,
+                response: Response<APIResponseModel>,
+            ) {
+                if (response.isSuccessful) {  //  Handles 200-299
+                    Toast.makeText(
+                        requireContext(),
+                        response.body()?.message ?: "Password Updated Successfully",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    dialog.dismiss()
+                } else {  // Handles 400, 404, 500
+                    handleUpdateError(response) // Handle API errors
+                }
+            }
+
+            override fun onFailure(call: Call<APIResponseModel>, t: Throwable) {
+                handleUpdateFailure(t)
+            }
+        })
+    }
+
+    // Shows the dialog for updating the user's security PIN.
     private fun showUpdatePinDialog(currentUser: UserModelItem) {
         val binding = UpdateSecurityPinDialogBinding.inflate(LayoutInflater.from(requireContext()))
         val dialog = Dialog(requireContext()).apply {
@@ -468,11 +365,12 @@ class ProfileFragment : Fragment() {
             show()
         }
 
-        val pinSpinner = arrayOf("Using Old Security PIN", "Using Password")
+        val pinSpinner = arrayOf("Using Old Security PIN", "Using Password") // Options for PIN update
         binding.dropDownSpinner.adapter = ArrayAdapter(
             requireContext(), android.R.layout.simple_spinner_dropdown_item,
             pinSpinner
         )
+
         binding.dropDownSpinner.onItemSelectedListener =
             object : AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(
@@ -482,123 +380,112 @@ class ProfileFragment : Fragment() {
                     id: Long,
                 ) {
                     when (position) {
-                        0 -> {
+                        0 -> { // Using old PIN
                             binding.oldPassword.isVisible = false
                             binding.oldPIN.isVisible = true
-                            Log.d(
-                                "${Constants.TAG} ProfileFragment",
-                                "PIN ${currentUser.securityPIN}  ${parent.getItemAtPosition(position)} "
-                            )
                         }
-
-                        1 -> {
+                        1 -> { // Using password
                             binding.oldPassword.isVisible = true
                             binding.oldPIN.isVisible = false
-                            Log.d(
-                                "${Constants.TAG} ProfileFragment",
-                                "PIN ${currentUser.securityPIN}  ${parent.getItemAtPosition(position)} "
-                            )
                         }
                     }
                 }
 
                 override fun onNothingSelected(p0: AdapterView<*>?) {
-                    Toast.makeText(requireContext(), "Nothing Selected", Toast.LENGTH_SHORT).show()
-
+                    // You can Optionally handle a case where the user does not make any selection.
                 }
             }
 
         binding.updatePINBtn.setOnClickListener {
-            val newPIN = binding.newPIN.editText?.text.toString()
-            val oldPIN = binding.oldPIN.editText?.text.toString().ifEmpty { null }
-            val password = binding.oldPassword.editText?.text.toString().ifEmpty { null }
-            Log.d(
-                "${Constants.TAG} ProfileFragment",
-                "PIN ${currentUser.securityPIN}  $oldPIN $newPIN $password "
-            )
-            if (newPIN.isBlank() || (oldPIN.isNullOrBlank() && password.isNullOrBlank())) {
-                Toast.makeText(requireContext(), "New PIN cannot be empty", Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                retrofit.updateSecurityPin(
-                    updateSecurityPinRequest = UpdateSecurityPinRequest(
-                        email = currentUser.email,
-                        newPIN,
-                        oldPIN,
-                        password
-                    )
-                ).enqueue(object : Callback<APIResponseModel> {
-                    override fun onResponse(
-                        call: Call<APIResponseModel>,
-                        response: Response<APIResponseModel>,
-                    ) {
+            val newPIN = binding.newPIN.editText?.text?.toString()?.trim() ?: ""
+            val oldPIN = binding.oldPIN.editText?.text?.toString()?.trim()?.ifEmpty { null }  // Use ifEmpty for conciseness
+            val password = binding.oldPassword.editText?.text?.toString()?.trim()?.ifEmpty { null }
 
-                        Log.d("${Constants.TAG} ProfileFragment", "${response}")
-
-                        try {
-                            if (response.isSuccessful) {  //  Handles 200-299
-                                Toast.makeText(
-                                    requireContext(),
-                                    response.body()?.message ?: "Success",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                                sharedPref.putUserData(
-                                    Constants.SP_USERDATA,
-                                    currentUser.copy(securityPIN = newPIN ?: "0000")
-                                )
-                                dialog.dismiss()
-                            } else {  // Handles 400, 404, 500
-                                val errorMessage =
-                                    JSONObject(response.errorBody()?.string().toString()).getString(
-                                        "message"
-                                    ) ?: "Unknown error"
-                                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                        } catch (e: Exception) {
-                            Log.e(
-                                "${Constants.TAG} ProfileFragment",
-                                "Error processing response: ${e.message}"
-                            )
-                            Toast.makeText(
-                                requireContext(),
-                                "Something went wrong!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    }
-
-                    override fun onFailure(call: Call<APIResponseModel>, t: Throwable) {
-                        Log.d("${Constants.TAG} ProfileFragment", "${t.message}")
-
-                    }
-                })
+            if (newPIN.isBlank()) {
+                binding.newPIN.error = "New PIN cannot be empty"
+                return@setOnClickListener
             }
+            binding.newPIN.error = null
+
+            if (oldPIN == null && password == null) { // If PIN is not updated by Old PIN then password must be not null.
+                Toast.makeText(requireContext(), "Enter Old PIN or Password", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            updateUserPIN(newPIN, oldPIN, password, dialog) // Update security PIN
         }
 
         binding.cancelPINBtn.setOnClickListener {
-            dialog.dismiss()
+            dialog.dismiss() // Dismiss dialog on cancel
         }
 
     }
 
-    // Sends an invitation message with an app download link
-    private fun sendInvite() {
-        sharedPref.init(requireContext())
+    private fun updateUserPIN(newPIN: String, oldPIN: String?, password: String?, dialog: Dialog){
+        apiService.updateSecurityPin(
+            updateSecurityPinRequest = UpdateSecurityPinRequest(
+                email = currentUser.email,
+                newPIN,
+                oldPIN,
+                password
+            )
+        ).enqueue(object : Callback<APIResponseModel> {
+            override fun onResponse(
+                call: Call<APIResponseModel>,
+                response: Response<APIResponseModel>,
+            ) {
+                if (response.isSuccessful) {
+                    Toast.makeText(
+                        requireContext(),
+                        response.body()?.message ?: "PIN Updated", // Use a default message
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    sharedPref.putUserData(
+                        Constants.SP_USERDATA,
+                        currentUser.copy(securityPIN = newPIN) // Update only PIN
+                    )
+                    dialog.dismiss()
+                } else {  // Handles 400, 404, 500
+                    handleUpdateError(response)
+                }
+            }
+            override fun onFailure(call: Call<APIResponseModel>, t: Throwable) {
+                handleUpdateFailure(t)
+            }
+        })
+    }
 
+    // Common function to handle update failures
+    private fun handleUpdateFailure(t: Throwable) {
+        Log.e(TAG, "Update failed: ${t.message}", t)
+        Toast.makeText(requireContext(), "Update failed. Check your connection.", Toast.LENGTH_SHORT).show()
+    }
+
+    // Common function to handle update errors
+    private fun handleUpdateError(response: Response<APIResponseModel>) {
+        val errorMessage = try {
+            JSONObject(response.errorBody()?.string() ?: "").getString("message")
+        } catch (e: Exception) {
+            "Unknown error"
+        }
+        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+        Log.e(TAG, "Update error: $errorMessage")
+    }
+
+    // Sends an invitation message with an app download link.
+    private fun sendInvite() {
         val inviteMessage =
             "I invite you to Safety\nDownload the app from the link https://github.com/RupamShrivastav/Safety1/releases/download/beta_v2/app-debug.apk\nAdd Organization - ${
-                sharedPref.getUserData(Constants.SP_USERDATA)!!.organization
+                currentUser.organization
             }"
 
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/plain"
             putExtra(Intent.EXTRA_TEXT, inviteMessage)
         }
-        context?.startActivity(Intent.createChooser(intent, "Share via"))
+        startActivity(Intent.createChooser(intent, "Share via"))
     }
 
-    // Requests permission and launches contact picker if granted
+    // Requests permission and launches contact picker if granted.
     private fun pickContact() {
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
@@ -611,11 +498,11 @@ class ProfileFragment : Fragment() {
                 READ_CONTACTS_PERMISSION_REQUEST
             )
         } else {
-            launchContactPicker() // Launch contact picker directly if permission granted
+            launchContactPicker()
         }
     }
 
-    // Handles permission request results
+    // Handles permission request results.
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -624,7 +511,7 @@ class ProfileFragment : Fragment() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == READ_CONTACTS_PERMISSION_REQUEST) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                launchContactPicker() // Launch contact picker if permission granted
+                launchContactPicker()
             } else {
                 Toast.makeText(
                     requireContext(),
@@ -635,99 +522,122 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    // Launches the contact picker
+    // Launches the contact picker.
     private fun launchContactPicker() {
         val intent = Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI)
         pickContactLauncher.launch(intent)
     }
 
-    // Handles selected contact and updates the trusted contact
+    // Handles selected contact and updates the trusted contact.
     private fun handleContactResult(data: Intent?) {
-        if (data != null) {
-            val contactUri: Uri = data.data!!
-            val cursor = activity?.contentResolver!!.query(contactUri, null, null, null, null)
-
+        val contactUri: Uri? = data?.data
+        if (contactUri != null) { // Check for null outside the use block
+            val cursor = requireActivity().contentResolver.query(contactUri, null, null, null, null) // Use requireActivity()
             cursor?.use {
                 if (it.moveToFirst()) {
                     val id = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts._ID))
-                    name =
-                        it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME))
-                    Log.d("1 @@@@@@ handle ", "Updated $name $phoneNum")
+                    name = it.getString(it.getColumnIndexOrThrow(ContactsContract.Contacts.DISPLAY_NAME))
 
-                    val hasPhone =
-                        it.getInt(it.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER))
-                    if (hasPhone > 0) {
-                        val phoneCursor = activity?.contentResolver!!.query(
-                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                            null,
-                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
-                            arrayOf(id),
-                            null
-                        )
-
-                        phoneCursor?.use { phone ->
-                            if (phone.moveToFirst()) {
-                                phoneNum =
-                                    phone.getString(phone.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
-
-                                // API call to update trusted contact
-
-                                retrofit.updateTrustedContact(
-                                    UpdateTrustedContactRequest(
-                                        email = currentUser.email,
-                                        trustedContactName = name,
-                                        trustedContactNumber = phoneNum
-                                    )
-                                ).enqueue(object : Callback<APIResponseModel> {
-                                    override fun onResponse(
-                                        call: Call<APIResponseModel>,
-                                        response: Response<APIResponseModel>,
-                                    ) {
-                                        Log.d("@@@@@ update", "Response: ${response}")
-                                        Log.d(
-                                            "@@@@@@ Update Trusted Contacts ",
-                                            "Updated $name $phoneNum"
-                                        )
-
-                                        // Save updated contact in shared preferences
-                                        Log.d(
-                                            "${Constants.TAG} Profile",
-                                            sharedPref.getUserData(Constants.SP_USERDATA).toString()
-                                        )
-                                        sharedPref.putUserData(
-                                            Constants.SP_USERDATA,
-                                            currentUser.copy(
-                                                trustedContactName = name,
-                                                trustedContactNumber = Constants.normalizePhoneNumber(
-                                                    phoneNum
-                                                ) ?: "00000"
-                                            )
-                                        )
-                                        binding.trustedContactNameProfile.text = name
-                                    }
-
-                                    override fun onFailure(
-                                        call: Call<APIResponseModel>,
-                                        t: Throwable,
-                                    ) {
-                                        Log.d(
-                                            "${Constants.TAG} ProfileFragment Error Trusted Contacts ",
-                                            "Update failed: ${t.message}"
-                                        )
-                                    }
-                                })
-                            }
-                        }
+                    val hasPhone = it.getInt(it.getColumnIndexOrThrow(ContactsContract.Contacts.HAS_PHONE_NUMBER))
+                    if (hasPhone > 0) { // Check if contact has a phone number
+                        queryContactPhoneNumber(id) // Query the contact phone number
                     } else {
-                        Toast.makeText(
-                            requireContext(),
-                            "Contact has no phone number",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        Toast.makeText(requireContext(), "Contact has no phone number", Toast.LENGTH_SHORT).show() // Show error
                     }
                 }
             }
         }
+    }
+
+    // Queries for contact phone number using the contact ID
+    private fun queryContactPhoneNumber(contactId: String){
+        val phoneCursor = requireActivity().contentResolver.query( // Use requireActivity()
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+            null,
+            ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+            arrayOf(contactId),
+            null
+        )
+
+        phoneCursor?.use { phone ->
+            if (phone.moveToFirst()) {
+                phoneNum = phone.getString(phone.getColumnIndexOrThrow(ContactsContract.CommonDataKinds.Phone.NUMBER))
+                updateTrustedContact()// Update trusted contact
+            }
+        }
+    }
+
+    // Function to update Trusted Contact on API call
+    private fun updateTrustedContact(){
+        apiService.updateTrustedContact(
+            UpdateTrustedContactRequest(
+                email = currentUser.email,
+                trustedContactName = name,
+                trustedContactNumber = phoneNum
+            )
+        ).enqueue(object : Callback<APIResponseModel> {
+            override fun onResponse(
+                call: Call<APIResponseModel>,
+                response: Response<APIResponseModel>,
+            ) {
+                if (response.isSuccessful) {
+                    handleTrustedContactUpdateSuccess(response) // Handle success
+                } else {
+                    handleUpdateError(response)  // Handle API error
+                }
+            }
+
+            override fun onFailure(call: Call<APIResponseModel>, t: Throwable) {
+                handleUpdateFailure(t) // Handle network failure
+            }
+        })
+    }
+
+    // Function to handle the successful trusted contact update.
+    private fun handleTrustedContactUpdateSuccess(response: Response<APIResponseModel>){
+        Toast.makeText(requireContext(), response.body()?.message ?: "Trusted Contact Updated", Toast.LENGTH_SHORT).show()
+
+        // Update local user data with new trusted contact info
+        currentUser = currentUser.copy(
+            trustedContactName = name,
+            trustedContactNumber = Constants.normalizePhoneNumber(phoneNum) ?: ""
+        )
+        sharedPref.putUserData(Constants.SP_USERDATA, currentUser) // Update shared preferences
+
+        // Update the UI to reflect the changes
+        binding.trustedContactNameProfile.text = name
+
+        // Update Firestore document
+        val updatedData = hashMapOf(
+            "trustedContactName" to name,
+            "trustedContactNumber" to (Constants.normalizePhoneNumber(phoneNum) ?: "")
+        )
+
+        db.collection(Constants.FIRESTORE_COLLECTION)
+            .document(currentUser.email)
+            .set(updatedData, SetOptions.merge()) // Merge with existing data
+            .addOnSuccessListener {
+                Log.d(TAG, "Trusted contact updated in Firestore")
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error updating trusted contact in Firestore", e)
+            }
+    }
+
+    // Signs out the user and clears data.
+    private fun signOut() {
+        Log.d(TAG, "Before Signout ${sharedPref.getUserData(Constants.SP_USERDATA)}") // Log before sign-out
+
+        sharedPref.putLoggedInfo(Constants.SP_LOGGED_INFO, false) // Clear login status
+        sharedPref.clearAllData() // Clear all shared preferences data
+
+        Log.d(TAG, "After Signout ${sharedPref.getUserData(Constants.SP_USERDATA)}") // Log after sign-out
+
+        // Navigate to LoginActivity and clear activity stack.
+        val intent = Intent(requireContext(), LoginUserActivity::class.java)
+        Toast.makeText(requireContext(), "Signed Out", Toast.LENGTH_SHORT).show()
+        startActivity(intent)
+        activity?.finishAffinity() // Finish all activities in the stack
     }
 
     companion object {

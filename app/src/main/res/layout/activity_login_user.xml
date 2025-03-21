@@ -7,6 +7,7 @@
     android:background="@drawable/bg_gradient"
     tools:context=".activity.LoginUserActivity">
 
+    <!-- Progress Bar -->
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBar"
         android:layout_width="match_parent"
@@ -18,20 +19,20 @@
         app:trackColor="@color/app_light_color"
         app:trackCornerRadius="@dimen/dimen_10dp" />
 
+    <!-- Main Content Layout -->
     <LinearLayout
         android:id="@+id/mainContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
+        <!-- Image and App Name Section -->
         <LinearLayout
             android:id="@+id/cvImage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/dimen_8dp"
             android:orientation="vertical">
-
 
             <ImageView
                 android:layout_width="@dimen/dimen_150dp"
@@ -48,9 +49,9 @@
                 android:text="@string/app_name"
                 android:textColor="@color/white"
                 android:textSize="@dimen/dimen_28sp" />
-
         </LinearLayout>
 
+        <!-- Card View for Login and Forgot Password Sections -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -59,6 +60,7 @@
             android:elevation="@dimen/dimen_16dp"
             app:cardCornerRadius="@dimen/dimen_16dp">
 
+            <!-- Login Layout -->
             <LinearLayout
                 android:id="@+id/loginLL"
                 android:layout_width="match_parent"
@@ -76,6 +78,7 @@
                     android:textColor="@color/cardview_dark_background"
                     android:textSize="@dimen/dimen_20sp" />
 
+                <!-- Email Input Layout -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilemailLogin"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
@@ -93,12 +96,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_regular"
-                        android:scrollHorizontally="true"
                         android:singleLine="true"
                         android:textSize="14sp" />
-
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Password Input Layout -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilpasswordLogin"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
@@ -116,10 +118,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_regular"
-                        android:scrollHorizontally="true"
                         android:singleLine="true"
                         android:textSize="14sp" />
-
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <TextView
@@ -132,6 +132,7 @@
                     android:gravity="end"
                     android:text="Forgot Password" />
 
+                <!-- Login Button -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/loginBtn"
                     android:layout_width="wrap_content"
@@ -158,6 +159,7 @@
                     android:text="New User? Register" />
             </LinearLayout>
 
+            <!-- Forgot Password Layout -->
             <LinearLayout
                 android:id="@+id/forgotPasswordLL"
                 android:layout_width="match_parent"
@@ -175,7 +177,7 @@
                     android:textColor="@color/cardview_dark_background"
                     android:textSize="@dimen/dimen_20sp" />
 
-
+                <!-- Email or Phone Input Layout -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/emailOrPhoneFP"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
@@ -193,12 +195,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_regular"
-                        android:scrollHorizontally="true"
                         android:singleLine="true"
                         android:textSize="14sp" />
-
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Security PIN Input Layout -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/securityPINFP"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
@@ -216,14 +217,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_regular"
-                        android:maxLength="5"
                         android:inputType="numberPassword"
-                        android:scrollHorizontally="true"
+                        android:maxLength="5"
                         android:singleLine="true"
                         android:textSize="14sp" />
-
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- New Password Input Layout -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/newPasswordFP"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
@@ -242,56 +242,58 @@
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_regular"
                         android:inputType="textPassword"
-                        android:scrollHorizontally="true"
                         android:singleLine="true"
                         android:textSize="14sp" />
-
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Reset and Cancel Buttons Layout -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:layout_marginTop="16dp"
                     android:gravity="center"
-                    android:paddingHorizontal="16dp"
-                    android:layout_marginTop="16dp">
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="16dp">
 
+                    <!-- Reset Password Button -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/resetPasswordBtnFP"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
                         android:layout_weight="1"
                         android:backgroundTint="@color/app_color"
                         android:fontFamily="@font/poppins_regular"
-                        android:paddingVertical="10dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
                         android:minWidth="120dp"
                         android:maxWidth="200dp"
-                        android:layout_marginEnd="8dp"
+                        android:paddingVertical="10dp"
                         android:text="Reset"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
                         android:textSize="14sp" />
 
+                    <!-- Cancel Button -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/cancelBtnFP"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
                         android:layout_weight="1"
                         android:backgroundTint="@color/red"
                         android:fontFamily="@font/poppins_regular"
-                        android:paddingVertical="10dp"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
                         android:minWidth="120dp"
                         android:maxWidth="200dp"
-                        android:layout_marginStart="8dp"
+                        android:paddingVertical="10dp"
                         android:text="Cancel"
                         android:textAllCaps="false"
                         android:textColor="@color/white"
                         android:textSize="14sp" />
                 </LinearLayout>
-
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
-
     </LinearLayout>
 </FrameLayout>

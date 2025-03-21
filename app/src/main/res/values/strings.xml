@@ -9,8 +9,6 @@
     <string name="dashboard">Location</string>
     <string name="guard_small">Services</string>
     <string name="profile">Profile</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="invite">Invite</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>
@@ -25,5 +23,13 @@
     <string name="enable_gps">Enable Gps</string>
     <string name="required_for_this_app">Required for Safety app</string>
     <string name="enable_now">Enable Now</string>
+    <string name="back_button">Back Button</string>
+    <string name="update_phone_number">update phone number</string>
+    <string name="update_name">Update Name</string>
+    <string name="profile_image">Profile Image</string>
+    <string name="sign_out">sign out</string>
+    <string name="invite_contacts">invite contacts</string>
+    <string name="update_password">update password</string>
+    <string name="update_security_pin">update security pin</string>
 
 </resources>

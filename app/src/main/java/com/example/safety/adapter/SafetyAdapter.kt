@@ -1,6 +1,5 @@
 package com.example.safety.adapter
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
@@ -18,78 +17,94 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 /**
  * SafetyAdapter
- *
- * This RecyclerView adapter is responsible for displaying a list of users and their safety details.
- * It binds data from a list of `UserModelItem` objects to the UI elements in each item view.
- *
- * @param memberList The list of users containing their details.
+ * RecyclerView adapter for displaying a list of users and their safety details.
  */
 class SafetyAdapter(private val memberList: UsersListModel) :
     RecyclerView.Adapter<SafetyAdapter.ViewHolder>() {
 
-    val TAG = "Rupam Safety Adapter"
-    private lateinit var fdb: FirebaseFirestore // Firestore instance for fetching user details
+    private val TAG = "SafetyAdapter" // Logging tag
+    private val fdb: FirebaseFirestore = FirebaseFirestore.getInstance() // Firestore instance
 
-    // ViewHolder class to hold the view binding for each item
-    inner class ViewHolder(var binding: ModelBinding) : RecyclerView.ViewHolder(binding.root)
+    // ViewHolder class to hold the view binding for each item.  Made *not* inner.
+    class ViewHolder(var binding: ModelBinding) : RecyclerView.ViewHolder(binding.root)
 
-    // Inflates the layout for each item in the RecyclerView
+    // Inflates the layout for each item.
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = ModelBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
- // Suppresses warning for setting text directly in UI
+    // Binds data to the views in each item.
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = memberList!![position] // Gets the user at the current position
-        fdb = FirebaseFirestore.getInstance() // Initializes Firestore instance
+        val item = memberList[position] // Get the user at the current position.  No !! needed.
 
-        // Fetches user details from Firestore using the email as the document ID
+        // Fetch user details from Firestore.
         fdb.collection(Constants.FIRESTORE_COLLECTION)
             .document(item.email)
             .get()
             .addOnSuccessListener { doc ->
-                val mem = doc.toObject(Users::class.java)!! // Converts Firestore document to Users object
-                Log.d("Rupam Safety Adapter", " $mem")
-
-                // Binds retrieved data to UI elements
-                holder.binding.nameModel.text = mem.name
-                holder.binding.addModel.text = "Latitude: ${mem.lat}\nLongitude: ${mem.long}"
-                holder.binding.batPerModel.text = "${mem.batPer}%" // Battery percentage
-                holder.binding.connectionTvModel.text = mem.connectionInfo // Connection info
-
-                // Handles phone call action when the call icon is clicked
-                holder.binding.callImgModel.setOnClickListener {
-                    val phoneNum = mem.phoneNumber.toLong()
-                    val intent = Intent(Intent.ACTION_DIAL)
-                    intent.data = Uri.parse("tel:$phoneNum") // Opens dialer with the user's phone number
-                    holder.itemView.context.startActivity(intent)
-                }
-
-                // Handles map navigation when the item is clicked
-                holder.itemView.setOnClickListener {
-                    val latitude = mem.lat.toDouble()
-                    val longitude = mem.long.toDouble()
-                    Log.d(TAG, "$mem.name $latitude $longitude ${mem.long}")
-
-                    // Creates a map fragment with the user's location
-                    val fragment = MapplsMapFragment.newInstance(latitude, longitude, mem.name, false)
-
-                    val activity = it.context as AppCompatActivity
-                    activity.supportFragmentManager
-                        .beginTransaction()
-                        .replace(R.id.container, fragment) // Replaces the current fragment with the map
-                        .addToBackStack(null) // Allows back navigation
-                        .commit()
+                val mem = doc.toObject(Users::class.java) // Convert to Users object.
+                if (mem != null) { // Check for null before proceeding
+                    bindUserData(holder, mem) // Bind the fetched data
+                    setupClickListeners(holder, mem) // Set up click listeners
+                } else {
+                    Log.w(TAG, "User data is null for email: ${item.email}") // Log a warning.
+                    // Consider showing a placeholder or error state in the UI here.
                 }
             }
-            .addOnFailureListener {
-                Log.d("Rupam Safety Adapter Error", "${it.message}") // Logs error if Firestore fetch fails
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error fetching user data: ${e.message}", e) // Log error.  More detail.
+                // Consider showing a placeholder or error state in the UI here.
             }
     }
 
-    // Returns the total number of items in the list
+    // Binds the fetched user data to the views.
+    private fun bindUserData(holder: ViewHolder, mem: Users) {
+        holder.binding.nameModel.text = mem.name
+        holder.binding.addModel.text = "Latitude: ${mem.lat}\nLongitude: ${mem.long}"
+        holder.binding.batPerModel.text = "${mem.batPer}%" // Battery percentage
+        holder.binding.connectionTvModel.text = mem.connectionInfo // Connection info
+    }
+
+
+    // Sets up click listeners for call and map actions.
+    private fun setupClickListeners(holder: ViewHolder, mem: Users) {
+        // Call button click listener
+        holder.binding.callImgModel.setOnClickListener {
+            val phoneNum = mem.phoneNumber
+            val intent = Intent(Intent.ACTION_DIAL).apply {
+                data = Uri.parse("tel:$phoneNum") // Use apply for concise intent setup.
+            }
+            // Use a safe call with let to ensure context is not null
+            holder.itemView.context?.let { context ->
+                if (intent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(intent)
+                } else {
+                    Log.e(TAG, "No activity found to handle dial intent")
+                    // Optionally show a Toast to inform the user.
+                }
+            }
+        }
+
+        // Item click listener for map navigation
+        holder.itemView.setOnClickListener {
+            val latitude = mem.lat.toDoubleOrNull() ?: 0.0 // Safe conversion to Double. Defaults to 0.0
+            val longitude = mem.long.toDoubleOrNull() ?: 0.0  // Safe conversion to Double
+            Log.d(TAG, "Navigating to map: ${mem.name}, lat=$latitude, long=$longitude")
+
+            val fragment = MapplsMapFragment.newInstance(latitude, longitude, mem.name, isOnDashBoard = false) // Pass data to fragment
+            val activity = it.context as AppCompatActivity // Get activity from context
+
+            activity.supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.container, fragment) // Replace current fragment with map
+                .addToBackStack(null) // Add to back stack for navigation
+                .commit()
+        }
+    }
+
+    // Returns the total number of items.
     override fun getItemCount(): Int {
-        return memberList?.size ?: 0
+        return memberList.size // No !! needed
     }
 }
