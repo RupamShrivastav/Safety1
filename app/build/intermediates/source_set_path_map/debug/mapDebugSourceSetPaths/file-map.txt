@@ -1,45 +1,46 @@
-com.example.safety.app-recyclerview-1.1.0-0 C:\Users\Acer\.gradle\caches\transforms-4\00225029d25fae936c144feecb6fb1df\transformed\recyclerview-1.1.0\res
-com.example.safety.app-cardview-1.0.0-1 C:\Users\Acer\.gradle\caches\transforms-4\03baa010747466fa9e091ed2145275bc\transformed\cardview-1.0.0\res
-com.example.safety.app-tracing-1.2.0-2 C:\Users\Acer\.gradle\caches\transforms-4\11018ad5c85dcab959e29898357f8a49\transformed\tracing-1.2.0\res
-com.example.safety.app-core-1.15.0-3 C:\Users\Acer\.gradle\caches\transforms-4\1cf09f86ce29d929d7cd0c342c719732\transformed\core-1.15.0\res
-com.example.safety.app-profileinstaller-1.4.0-4 C:\Users\Acer\.gradle\caches\transforms-4\1f34ee713f4f7e4595fc02830acff758\transformed\profileinstaller-1.4.0\res
-com.example.safety.app-activity-1.10.0-5 C:\Users\Acer\.gradle\caches\transforms-4\1f8e27098bbcebfea90f6896903b7164\transformed\activity-1.10.0\res
-com.example.safety.app-lifecycle-runtime-2.6.2-6 C:\Users\Acer\.gradle\caches\transforms-4\232958d67bef0fbdebd09575c0cb979d\transformed\lifecycle-runtime-2.6.2\res
-com.example.safety.app-transition-1.5.0-7 C:\Users\Acer\.gradle\caches\transforms-4\2376916ba57573540d5c954476847d5a\transformed\transition-1.5.0\res
-com.example.safety.app-drawerlayout-1.1.1-8 C:\Users\Acer\.gradle\caches\transforms-4\265fe096846ea686fda944905b3759b1\transformed\drawerlayout-1.1.1\res
-com.example.safety.app-emoji2-1.3.0-9 C:\Users\Acer\.gradle\caches\transforms-4\26f1823aa11f21019db9a4ee11601d39\transformed\emoji2-1.3.0\res
-com.example.safety.app-startup-runtime-1.1.1-10 C:\Users\Acer\.gradle\caches\transforms-4\2a020f84a4577431982bac4327390fa0\transformed\startup-runtime-1.1.1\res
-com.example.safety.app-constraintlayout-2.2.0-11 C:\Users\Acer\.gradle\caches\transforms-4\34d28bc1898fd9a76f07fcfd461fa7c1\transformed\constraintlayout-2.2.0\res
-com.example.safety.app-lifecycle-livedata-2.6.2-12 C:\Users\Acer\.gradle\caches\transforms-4\36b399fd6d4c682d218f00e9282192cd\transformed\lifecycle-livedata-2.6.2\res
-com.example.safety.app-play-services-basement-18.4.0-13 C:\Users\Acer\.gradle\caches\transforms-4\37cdb9c447668dd58218682907dddb6a\transformed\play-services-basement-18.4.0\res
-com.example.safety.app-savedstate-1.2.1-14 C:\Users\Acer\.gradle\caches\transforms-4\41b90a79d232b5a715add3eab21ba1be\transformed\savedstate-1.2.1\res
-com.example.safety.app-play-services-base-18.5.0-15 C:\Users\Acer\.gradle\caches\transforms-4\584ca667630fba202f24f7527fb318f8\transformed\play-services-base-18.5.0\res
-com.example.safety.app-material-1.12.0-16 C:\Users\Acer\.gradle\caches\transforms-4\616d4471d5543af0655cd53825df6e8e\transformed\material-1.12.0\res
-com.example.safety.app-appcompat-1.7.0-17 C:\Users\Acer\.gradle\caches\transforms-4\64da3cfdf9bf4e2dda1908bec3b38476\transformed\appcompat-1.7.0\res
-com.example.safety.app-lifecycle-process-2.6.2-18 C:\Users\Acer\.gradle\caches\transforms-4\6a7eeba995c30f2f4e4050bfaa2e5b5e\transformed\lifecycle-process-2.6.2\res
-com.example.safety.app-annotation-experimental-1.4.1-19 C:\Users\Acer\.gradle\caches\transforms-4\87dc1225d2afb46aa4b3bd982c899a9c\transformed\annotation-experimental-1.4.1\res
-com.example.safety.app-appcompat-resources-1.7.0-20 C:\Users\Acer\.gradle\caches\transforms-4\993153d2c1683d5b11b0efcfe31d5317\transformed\appcompat-resources-1.7.0\res
-com.example.safety.app-core-runtime-2.2.0-21 C:\Users\Acer\.gradle\caches\transforms-4\a3c158c2610e337c0439112b74affc03\transformed\core-runtime-2.2.0\res
-com.example.safety.app-emoji2-views-helper-1.3.0-22 C:\Users\Acer\.gradle\caches\transforms-4\a7dbd4fa809771a96f08806d6b55ba4e\transformed\emoji2-views-helper-1.3.0\res
-com.example.safety.app-lifecycle-viewmodel-2.6.2-23 C:\Users\Acer\.gradle\caches\transforms-4\aa21c366e1f57732b0762e710c771855\transformed\lifecycle-viewmodel-2.6.2\res
-com.example.safety.app-mappls-android-sdk-8.2.6-24 C:\Users\Acer\.gradle\caches\transforms-4\adab2f487c8645c4c8b6055bcda2a897\transformed\mappls-android-sdk-8.2.6\res
-com.example.safety.app-databinding-runtime-8.5.2-25 C:\Users\Acer\.gradle\caches\transforms-4\ae8f5d2a201dcdb140bbf1b32ced83f0\transformed\databinding-runtime-8.5.2\res
-com.example.safety.app-databinding-adapters-8.5.2-26 C:\Users\Acer\.gradle\caches\transforms-4\ba203cf7b04851f193c2b3545e0bc906\transformed\databinding-adapters-8.5.2\res
-com.example.safety.app-viewpager2-1.0.0-27 C:\Users\Acer\.gradle\caches\transforms-4\ca829d7decef5f93326a8071207fe493\transformed\viewpager2-1.0.0\res
-com.example.safety.app-coordinatorlayout-1.1.0-28 C:\Users\Acer\.gradle\caches\transforms-4\d01491a9e1abb2cdb487d26bebdaa973\transformed\coordinatorlayout-1.1.0\res
-com.example.safety.app-core-ktx-1.15.0-29 C:\Users\Acer\.gradle\caches\transforms-4\d14b41ef85fc3718e428d7135e063225\transformed\core-ktx-1.15.0\res
-com.example.safety.app-lifecycle-livedata-core-2.6.2-30 C:\Users\Acer\.gradle\caches\transforms-4\ddd51e48f419547df6189fec98e9cc56\transformed\lifecycle-livedata-core-2.6.2\res
-com.example.safety.app-lifecycle-service-2.6.2-31 C:\Users\Acer\.gradle\caches\transforms-4\ddedb09406772fcd8b00911aba7ca762\transformed\lifecycle-service-2.6.2\res
-com.example.safety.app-fragment-1.5.4-32 C:\Users\Acer\.gradle\caches\transforms-4\eb3010d5432f4cfc24ea8b08774c9a44\transformed\fragment-1.5.4\res
-com.example.safety.app-lifecycle-runtime-ktx-2.6.2-33 C:\Users\Acer\.gradle\caches\transforms-4\ee2b0de61085886b88809e5fea354741\transformed\lifecycle-runtime-ktx-2.6.2\res
-com.example.safety.app-firebase-common-21.0.0-34 C:\Users\Acer\.gradle\caches\transforms-4\f4cc8a8104126362fa74fe9ef1c79589\transformed\firebase-common-21.0.0\res
-com.example.safety.app-lifecycle-viewmodel-savedstate-2.6.2-35 C:\Users\Acer\.gradle\caches\transforms-4\f4d58772997513fd32b7c623e12cceac\transformed\lifecycle-viewmodel-savedstate-2.6.2\res
-com.example.safety.app-mappls-gestures-1.0.1-36 C:\Users\Acer\.gradle\caches\transforms-4\f640f89b08c87d863028244ac3a77462\transformed\mappls-gestures-1.0.1\res
-com.example.safety.app-pngs-37 D:\ANDROID\Safety\app\build\generated\res\pngs\debug
-com.example.safety.app-res-38 D:\ANDROID\Safety\app\build\generated\res\processDebugGoogleServices
-com.example.safety.app-resValues-39 D:\ANDROID\Safety\app\build\generated\res\resValues\debug
-com.example.safety.app-packageDebugResources-40 D:\ANDROID\Safety\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
-com.example.safety.app-packageDebugResources-41 D:\ANDROID\Safety\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
-com.example.safety.app-debug-42 D:\ANDROID\Safety\app\build\intermediates\merged_res\debug\mergeDebugResources
-com.example.safety.app-debug-43 D:\ANDROID\Safety\app\src\debug\res
-com.example.safety.app-main-44 D:\ANDROID\Safety\app\src\main\res
+com.example.safety.app-lifecycle-viewmodel-2.6.2-0 C:\Users\JAYAM\.gradle\caches\transforms-4\03dcfb646dfc3af86e8067448b5c7084\transformed\lifecycle-viewmodel-2.6.2\res
+com.example.safety.app-appcompat-resources-1.7.0-1 C:\Users\JAYAM\.gradle\caches\transforms-4\07765ef2a7cad255bbfe6da5bf906d07\transformed\appcompat-resources-1.7.0\res
+com.example.safety.app-lifecycle-service-2.6.2-2 C:\Users\JAYAM\.gradle\caches\transforms-4\0ef610f31a727450bd329e64a0d7137c\transformed\lifecycle-service-2.6.2\res
+com.example.safety.app-lifecycle-runtime-ktx-2.6.2-3 C:\Users\JAYAM\.gradle\caches\transforms-4\119e35a1ed2da03c6bf046c54d1684a6\transformed\lifecycle-runtime-ktx-2.6.2\res
+com.example.safety.app-transition-1.5.0-4 C:\Users\JAYAM\.gradle\caches\transforms-4\16cde2e0a9b173f4321387d67cd38c04\transformed\transition-1.5.0\res
+com.example.safety.app-fragment-1.5.4-5 C:\Users\JAYAM\.gradle\caches\transforms-4\18705709e8b87c635848bc35d0293690\transformed\fragment-1.5.4\res
+com.example.safety.app-drawerlayout-1.1.1-6 C:\Users\JAYAM\.gradle\caches\transforms-4\1a2e30906c521056688b41ddfd248091\transformed\drawerlayout-1.1.1\res
+com.example.safety.app-mappls-android-sdk-8.2.6-7 C:\Users\JAYAM\.gradle\caches\transforms-4\1b5974fb49954c2234f465e9294db0d5\transformed\mappls-android-sdk-8.2.6\res
+com.example.safety.app-lifecycle-viewmodel-savedstate-2.6.2-8 C:\Users\JAYAM\.gradle\caches\transforms-4\20fda713ae55d2d4d3a140c96753ae9a\transformed\lifecycle-viewmodel-savedstate-2.6.2\res
+com.example.safety.app-lifecycle-process-2.6.2-9 C:\Users\JAYAM\.gradle\caches\transforms-4\36254268a204eb6dc4caa9d1ba3f5ebc\transformed\lifecycle-process-2.6.2\res
+com.example.safety.app-lifecycle-runtime-2.6.2-10 C:\Users\JAYAM\.gradle\caches\transforms-4\3a2b4dbc299819a05b6c9a2f085bf859\transformed\lifecycle-runtime-2.6.2\res
+com.example.safety.app-tracing-1.2.0-11 C:\Users\JAYAM\.gradle\caches\transforms-4\3cebd78d8b0c799ef0e4a64cb6e767d3\transformed\tracing-1.2.0\res
+com.example.safety.app-activity-1.10.0-12 C:\Users\JAYAM\.gradle\caches\transforms-4\41fe2013dda5e1775b1a2f9f71aa5113\transformed\activity-1.10.0\res
+com.example.safety.app-play-services-basement-18.4.0-13 C:\Users\JAYAM\.gradle\caches\transforms-4\45fed3996b30b2094648660bbd0e8366\transformed\play-services-basement-18.4.0\res
+com.example.safety.app-savedstate-1.2.1-14 C:\Users\JAYAM\.gradle\caches\transforms-4\46969b567fe062472d285f3e81066ec2\transformed\savedstate-1.2.1\res
+com.example.safety.app-play-services-base-18.5.0-15 C:\Users\JAYAM\.gradle\caches\transforms-4\51be958016a321650e879bf394184eaf\transformed\play-services-base-18.5.0\res
+com.example.safety.app-lifecycle-livedata-core-2.6.2-16 C:\Users\JAYAM\.gradle\caches\transforms-4\528daa0e584346f0e073b00a350de650\transformed\lifecycle-livedata-core-2.6.2\res
+com.example.safety.app-mappls-gestures-1.0.1-17 C:\Users\JAYAM\.gradle\caches\transforms-4\54e65ae3a291a94724323be511b33b5c\transformed\mappls-gestures-1.0.1\res
+com.example.safety.app-material-1.12.0-18 C:\Users\JAYAM\.gradle\caches\transforms-4\5ce478c8099fa63df5201436203ebaae\transformed\material-1.12.0\res
+com.example.safety.app-firebase-common-21.0.0-19 C:\Users\JAYAM\.gradle\caches\transforms-4\5d37f59453f24dc5d8af8145c39665c1\transformed\firebase-common-21.0.0\res
+com.example.safety.app-appcompat-1.7.0-20 C:\Users\JAYAM\.gradle\caches\transforms-4\6437a78c1899813844ee42c5864f037b\transformed\appcompat-1.7.0\res
+com.example.safety.app-startup-runtime-1.1.1-21 C:\Users\JAYAM\.gradle\caches\transforms-4\67a0fc81a7bfe3472319c982adf2323f\transformed\startup-runtime-1.1.1\res
+com.example.safety.app-profileinstaller-1.4.0-22 C:\Users\JAYAM\.gradle\caches\transforms-4\69e4379c0dcfe41182e10538aff6158d\transformed\profileinstaller-1.4.0\res
+com.example.safety.app-databinding-runtime-8.5.2-23 C:\Users\JAYAM\.gradle\caches\transforms-4\7279bca9c5f4526db9fdab842638b121\transformed\databinding-runtime-8.5.2\res
+com.example.safety.app-cardview-1.0.0-24 C:\Users\JAYAM\.gradle\caches\transforms-4\8814ea516bd57dd958d376087fd69758\transformed\cardview-1.0.0\res
+com.example.safety.app-core-runtime-2.2.0-25 C:\Users\JAYAM\.gradle\caches\transforms-4\8b234bf967b0eb6bd577ca92ee8b6428\transformed\core-runtime-2.2.0\res
+com.example.safety.app-constraintlayout-2.2.0-26 C:\Users\JAYAM\.gradle\caches\transforms-4\8f8c9c581f10ac5c568f4ffe831f83ca\transformed\constraintlayout-2.2.0\res
+com.example.safety.app-lifecycle-livedata-2.6.2-27 C:\Users\JAYAM\.gradle\caches\transforms-4\964c7e38f1ac72a1ad872ef42edb726a\transformed\lifecycle-livedata-2.6.2\res
+com.example.safety.app-annotation-experimental-1.4.1-28 C:\Users\JAYAM\.gradle\caches\transforms-4\988c6dc03f9bc7231f0ffdcdec7f7a6c\transformed\annotation-experimental-1.4.1\res
+com.example.safety.app-databinding-adapters-8.5.2-29 C:\Users\JAYAM\.gradle\caches\transforms-4\9deb05955347e4d400a61a3fa3a4c8b6\transformed\databinding-adapters-8.5.2\res
+com.example.safety.app-emoji2-views-helper-1.3.0-30 C:\Users\JAYAM\.gradle\caches\transforms-4\a27f1edc27a974c0f6c0c2d90d89e0fe\transformed\emoji2-views-helper-1.3.0\res
+com.example.safety.app-core-1.6.1-31 C:\Users\JAYAM\.gradle\caches\transforms-4\d2d56439d588ecdb6c84c3083ca6e74e\transformed\core-1.6.1\res
+com.example.safety.app-emoji2-1.3.0-32 C:\Users\JAYAM\.gradle\caches\transforms-4\d35024ff98715913de3c02fdec181c72\transformed\emoji2-1.3.0\res
+com.example.safety.app-recyclerview-1.1.0-33 C:\Users\JAYAM\.gradle\caches\transforms-4\d7be3bf3052538c5aa5fb76ef5598494\transformed\recyclerview-1.1.0\res
+com.example.safety.app-core-ktx-1.15.0-34 C:\Users\JAYAM\.gradle\caches\transforms-4\db93c1811e9f74b8a7739b0b7d17a7c7\transformed\core-ktx-1.15.0\res
+com.example.safety.app-core-1.15.0-35 C:\Users\JAYAM\.gradle\caches\transforms-4\df47ff2e2d0a9d71166f7e592a3d2edf\transformed\core-1.15.0\res
+com.example.safety.app-viewpager2-1.0.0-36 C:\Users\JAYAM\.gradle\caches\transforms-4\e57cbd80d370d6954d2323cb76cfba6e\transformed\viewpager2-1.0.0\res
+com.example.safety.app-coordinatorlayout-1.1.0-37 C:\Users\JAYAM\.gradle\caches\transforms-4\f3f26880448b67e9b727e9e94abd1b15\transformed\coordinatorlayout-1.1.0\res
+com.example.safety.app-pngs-38 D:\Users\Jayam Shrivastav\AndroidStudioProjects\Safety2\app\build\generated\res\pngs\debug
+com.example.safety.app-res-39 D:\Users\Jayam Shrivastav\AndroidStudioProjects\Safety2\app\build\generated\res\processDebugGoogleServices
+com.example.safety.app-resValues-40 D:\Users\Jayam Shrivastav\AndroidStudioProjects\Safety2\app\build\generated\res\resValues\debug
+com.example.safety.app-packageDebugResources-41 D:\Users\Jayam Shrivastav\AndroidStudioProjects\Safety2\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.example.safety.app-packageDebugResources-42 D:\Users\Jayam Shrivastav\AndroidStudioProjects\Safety2\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.example.safety.app-debug-43 D:\Users\Jayam Shrivastav\AndroidStudioProjects\Safety2\app\build\intermediates\merged_res\debug\mergeDebugResources
+com.example.safety.app-debug-44 D:\Users\Jayam Shrivastav\AndroidStudioProjects\Safety2\app\src\debug\res
+com.example.safety.app-main-45 D:\Users\Jayam Shrivastav\AndroidStudioProjects\Safety2\app\src\main\res

@@ -7,6 +7,7 @@
     android:background="@drawable/bg_gradient"
     tools:context=".activity.RegisterUserActivity">
 
+    <!-- Progress Indicator -->
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/progressBar"
         android:layout_width="match_parent"
@@ -18,12 +19,14 @@
         app:trackColor="@color/app_light_color"
         app:trackCornerRadius="@dimen/dimen_10dp" />
 
+    <!-- Main Content Layout -->
     <LinearLayout
         android:id="@+id/mainContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <!-- App Icon and Title -->
         <LinearLayout
             android:id="@+id/cvImage"
             android:layout_width="match_parent"
@@ -50,6 +53,7 @@
 
         </LinearLayout>
 
+        <!-- Registration Card -->
         <androidx.cardview.widget.CardView
             android:id="@+id/registrationCV"
             android:layout_width="match_parent"
@@ -76,6 +80,7 @@
                     android:textColor="@color/cardview_dark_background"
                     android:textSize="@dimen/dimen_20sp" />
 
+                <!-- Full Name Input -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilName"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
@@ -100,6 +105,7 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Email Input -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilemail"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
@@ -123,6 +129,7 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Password Input -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilpassword"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
@@ -148,6 +155,7 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Next Step Button -->
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/nextToNumberLL"
                     android:layout_width="wrap_content"
@@ -162,6 +170,7 @@
                     app:rippleColor="@color/app_light_color"
                     app:tint="@color/white" />
 
+                <!-- Already Registered Text -->
                 <TextView
                     android:id="@+id/tV_alreadyReg"
                     android:layout_width="match_parent"
@@ -170,10 +179,12 @@
                     android:clickable="true"
                     android:fontFamily="@font/poppins_extra_light_italic"
                     android:gravity="center_horizontal"
-                    android:text="Already Registered? Login" />
+                    android:text="Already Registered? Login"
+                    android:focusable="true" />
 
             </LinearLayout>
 
+            <!-- Phone Number and Trusted Contact Input -->
             <LinearLayout
                 android:id="@+id/numberLL"
                 android:layout_width="match_parent"
@@ -181,6 +192,7 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
+                <!-- Back Button and Title -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -192,7 +204,8 @@
                         android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:layout_marginStart="8dp"
-                        app:srcCompat="@drawable/baseline_arrow_back_24" />
+                        app:srcCompat="@drawable/baseline_arrow_back_24"
+                        android:contentDescription="@string/back_button" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -205,6 +218,7 @@
                         android:textSize="@dimen/dimen_20sp" />
                 </LinearLayout>
 
+                <!-- Phone Number Input -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/phoneNumberLayout"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
@@ -219,19 +233,19 @@
                     app:endIconMode="clear_text">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/phoneNumber"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/poppins_regular"
                         android:inputType="number"
                         android:scrollHorizontally="true"
-                        android:id="@+id/phoneNumber"
                         android:singleLine="true"
                         android:textSize="14sp" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Trusted Contact Input -->
                 <com.google.android.material.textfield.TextInputLayout
-
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -262,6 +276,7 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Organization Input -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilOrganization"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
@@ -289,6 +304,7 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <!-- Next Step Button -->
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/nextToPinLL"
                     android:layout_width="wrap_content"
@@ -305,6 +321,7 @@
 
             </LinearLayout>
 
+            <!-- PIN Input -->
             <LinearLayout
                 android:id="@+id/pinLL"
                 android:layout_width="match_parent"
@@ -312,7 +329,7 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-
+                <!-- Back Button and Title -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -324,7 +341,8 @@
                         android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:layout_marginStart="8dp"
-                        app:srcCompat="@drawable/baseline_arrow_back_24" />
+                        app:srcCompat="@drawable/baseline_arrow_back_24"
+                        android:contentDescription="@string/back_button" />
 
                     <TextView
                         android:layout_width="match_parent"
@@ -335,9 +353,10 @@
                         android:text="Security PIN"
                         android:textColor="@color/cardview_dark_background"
                         android:textSize="@dimen/dimen_20sp" />
-
                 </LinearLayout>
-                  <LinearLayout
+
+                <!-- PIN Input Fields -->
+                <LinearLayout
                     android:id="@+id/pinContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -357,7 +376,8 @@
                         android:inputType="number"
                         android:maxLength="1"
                         android:padding="4dp"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:importantForAutofill="no" />
 
                     <EditText
                         android:id="@+id/pin2"
@@ -371,7 +391,8 @@
                         android:inputType="number"
                         android:maxLength="1"
                         android:padding="4dp"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:importantForAutofill="no" />
 
                     <EditText
                         android:id="@+id/pin3"
@@ -385,7 +406,8 @@
                         android:inputType="number"
                         android:maxLength="1"
                         android:padding="4dp"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:importantForAutofill="no" />
 
                     <EditText
                         android:id="@+id/pin4"
@@ -399,7 +421,8 @@
                         android:inputType="number"
                         android:maxLength="1"
                         android:padding="4dp"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:importantForAutofill="no" />
 
                     <EditText
                         android:id="@+id/pin5"
@@ -413,10 +436,11 @@
                         android:inputType="number"
                         android:maxLength="1"
                         android:padding="4dp"
-                        android:textSize="18sp" />
+                        android:textSize="18sp"
+                        android:importantForAutofill="no" />
                 </LinearLayout>
 
-
+                <!-- Register Button -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/RegisterBtn"
                     android:layout_width="wrap_content"
@@ -433,10 +457,7 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/dimen_14sp"
                     app:cornerRadius="14dp" />
-
             </LinearLayout>
-
         </androidx.cardview.widget.CardView>
     </LinearLayout>
-
 </FrameLayout>

@@ -5,10 +5,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.example.safety.R;
@@ -19,7 +19,7 @@ import java.lang.String;
 
 public final class FragmentServiceBinding implements ViewBinding {
   @NonNull
-  private final RelativeLayout rootView;
+  private final ConstraintLayout rootView;
 
   @NonNull
   public final TextView cv1Disc;
@@ -48,7 +48,7 @@ public final class FragmentServiceBinding implements ViewBinding {
   @NonNull
   public final TextView textSrc;
 
-  private FragmentServiceBinding(@NonNull RelativeLayout rootView, @NonNull TextView cv1Disc,
+  private FragmentServiceBinding(@NonNull ConstraintLayout rootView, @NonNull TextView cv1Disc,
       @NonNull TextView cv1Head, @NonNull TextView cv2Disc, @NonNull TextView cv2Head,
       @NonNull MaterialCardView cvGuard, @NonNull MaterialCardView cvSOS,
       @NonNull ImageView guardImg, @NonNull ImageView sosImg, @NonNull TextView textSrc) {
@@ -66,7 +66,7 @@ public final class FragmentServiceBinding implements ViewBinding {
 
   @Override
   @NonNull
-  public RelativeLayout getRoot() {
+  public ConstraintLayout getRoot() {
     return rootView;
   }
 
@@ -145,7 +145,7 @@ public final class FragmentServiceBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentServiceBinding((RelativeLayout) rootView, cv1Disc, cv1Head, cv2Disc,
+      return new FragmentServiceBinding((ConstraintLayout) rootView, cv1Disc, cv1Head, cv2Disc,
           cv2Head, cvGuard, cvSOS, guardImg, sosImg, textSrc);
     }
     String missingId = rootView.getResources().getResourceName(id);

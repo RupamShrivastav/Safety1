@@ -23,9 +23,6 @@ public final class FragmentProfileBinding implements ViewBinding {
   private final ScrollView rootView;
 
   @NonNull
-  public final TextView editProfile;
-
-  @NonNull
   public final TextView email;
 
   @NonNull
@@ -36,9 +33,6 @@ public final class FragmentProfileBinding implements ViewBinding {
 
   @NonNull
   public final ImageView profileImg;
-
-  @NonNull
-  public final TextView profileLoc;
 
   @NonNull
   public final TextView profileName;
@@ -64,20 +58,17 @@ public final class FragmentProfileBinding implements ViewBinding {
   @NonNull
   public final TextView updatePin;
 
-  private FragmentProfileBinding(@NonNull ScrollView rootView, @NonNull TextView editProfile,
-      @NonNull TextView email, @NonNull LinearLayout guardNum,
-      @NonNull MaterialCardView inviteContacts, @NonNull ImageView profileImg,
-      @NonNull TextView profileLoc, @NonNull TextView profileName, @NonNull TextView signout,
+  private FragmentProfileBinding(@NonNull ScrollView rootView, @NonNull TextView email,
+      @NonNull LinearLayout guardNum, @NonNull MaterialCardView inviteContacts,
+      @NonNull ImageView profileImg, @NonNull TextView profileName, @NonNull TextView signout,
       @NonNull TextView tVProfile, @NonNull TextView trustedContactNameProfile,
       @NonNull TextView updateName, @NonNull TextView updateNumber,
       @NonNull TextView updatePassword, @NonNull TextView updatePin) {
     this.rootView = rootView;
-    this.editProfile = editProfile;
     this.email = email;
     this.guardNum = guardNum;
     this.inviteContacts = inviteContacts;
     this.profileImg = profileImg;
-    this.profileLoc = profileLoc;
     this.profileName = profileName;
     this.signout = signout;
     this.tVProfile = tVProfile;
@@ -115,12 +106,6 @@ public final class FragmentProfileBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.editProfile;
-      TextView editProfile = ViewBindings.findChildViewById(rootView, id);
-      if (editProfile == null) {
-        break missingId;
-      }
-
       id = R.id.email;
       TextView email = ViewBindings.findChildViewById(rootView, id);
       if (email == null) {
@@ -142,12 +127,6 @@ public final class FragmentProfileBinding implements ViewBinding {
       id = R.id.profileImg;
       ImageView profileImg = ViewBindings.findChildViewById(rootView, id);
       if (profileImg == null) {
-        break missingId;
-      }
-
-      id = R.id.profileLoc;
-      TextView profileLoc = ViewBindings.findChildViewById(rootView, id);
-      if (profileLoc == null) {
         break missingId;
       }
 
@@ -199,9 +178,9 @@ public final class FragmentProfileBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentProfileBinding((ScrollView) rootView, editProfile, email, guardNum,
-          inviteContacts, profileImg, profileLoc, profileName, signout, tVProfile,
-          trustedContactNameProfile, updateName, updateNumber, updatePassword, updatePin);
+      return new FragmentProfileBinding((ScrollView) rootView, email, guardNum, inviteContacts,
+          profileImg, profileName, signout, tVProfile, trustedContactNameProfile, updateName,
+          updateNumber, updatePassword, updatePin);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-    This XML defines a color selector used to change colors dynamically
-    based on the "checked" state of a UI component (e.g., a Checkbox, RadioButton, or Switch).
--->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <!-- When the component is checked (selected), use the app's primary color -->
     <item android:color="@color/app_color" android:state_checked="true"/>
-
-    <!-- When the component is not checked (unselected), use a grey color -->
     <item android:color="@color/grey" android:state_checked="false"/>
-
 </selector>

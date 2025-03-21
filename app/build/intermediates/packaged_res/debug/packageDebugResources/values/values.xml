@@ -38,6 +38,7 @@
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="app_name">Safety</string>
+    <string name="back_button">Back Button</string>
     <string name="dashboard">Location</string>
     <string name="enable_gps">Enable Gps</string>
     <string name="enable_now">Enable Now</string>
@@ -48,22 +49,28 @@
     <string name="google_storage_bucket" translatable="false">safety-f6858.firebasestorage.app</string>
     <string name="guard">GUARD</string>
     <string name="guard_small">Services</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home">Home</string>
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="invalid_username">Not a valid username</string>
     <string name="invite">Invite</string>
+    <string name="invite_contacts">invite contacts</string>
     <string name="login_failed">"Login failed"</string>
     <string name="open_when_you_on_a_potentially_dangerous_journey">Open when you on a potentially dangerous journey</string>
     <string name="profile">Profile</string>
+    <string name="profile_image">Profile Image</string>
     <string name="project_id" translatable="false">safety-f6858</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="required_for_this_app">Required for Safety app</string>
     <string name="security">Security</string>
+    <string name="sign_out">sign out</string>
     <string name="sos">SOS</string>
     <string name="sos_description">In case of emergency, keep telling family members to contact me</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="update_name">Update Name</string>
+    <string name="update_password">update password</string>
+    <string name="update_phone_number">update phone number</string>
+    <string name="update_security_pin">update security pin</string>
     <string name="welcome">"Welcome !"</string>
     <string name="welcome_login">Welcome</string>
     <style name="SplashScreen_bg" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -75,18 +82,13 @@
         <item name="android:statusBarColor">@color/app_color</item>
     </style>
     <style name="Theme.Safety" parent="Theme.MaterialComponents.Light.NoActionBar">
-        
         <item name="colorPrimary">@color/green</item>
         <item name="colorPrimaryVariant">#A8A5A5</item>
         <item name="colorOnPrimary">@color/white</item>
-        
         <item name="colorSecondary">@color/teal_200</item>
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
-        
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <item name="android:forceDarkAllowed" ns1:targetApi="29">false</item>
-
-        
     </style>
 </resources>

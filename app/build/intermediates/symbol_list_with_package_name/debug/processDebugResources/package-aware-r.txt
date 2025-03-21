@@ -3593,7 +3593,6 @@ id easeInOut
 id easeOut
 id east
 id edge
-id editProfile
 id edit_query
 id edit_text_id
 id elastic
@@ -3830,7 +3829,6 @@ id position
 id postLayout
 id pressed
 id profileImg
-id profileLoc
 id profileName
 id progressBar
 id progress_circular
@@ -3875,7 +3873,6 @@ id securityPINFP
 id select_dialog_listview
 id selected
 id selection_type
-id settings
 id sharedValueSet
 id sharedValueUnset
 id shortcut
@@ -4161,7 +4158,7 @@ layout design_navigation_menu_item
 layout design_text_input_end_icon
 layout design_text_input_start_icon
 layout fragment_home
-layout fragment_maps
+layout fragment_mappls_map
 layout fragment_profile
 layout fragment_service
 layout ime_base_split_test_activity
@@ -4240,7 +4237,6 @@ layout update_password_dialog
 layout update_phone_number_dialog
 layout update_security_pin_dialog
 menu bottom_nav_items
-menu home_menu
 mipmap ic_launcher
 mipmap ic_launcher_foreground
 mipmap ic_launcher_round
@@ -4279,6 +4275,7 @@ string action_sign_in_short
 string androidx_startup
 string app_name
 string appbar_scrolling_view_behavior
+string back_button
 string bottom_sheet_behavior
 string bottomsheet_action_collapse
 string bottomsheet_action_expand
@@ -4329,13 +4326,13 @@ string google_crash_reporting_api_key
 string google_storage_bucket
 string guard
 string guard_small
-string hello_blank_fragment
 string hide_bottom_view_on_scroll_behavior
 string home
 string icon_content_description
 string invalid_password
 string invalid_username
 string invite
+string invite_contacts
 string item_view_role_description
 string login_failed
 string m3_exceed_max_badge_text_suffix
@@ -4464,6 +4461,7 @@ string path_password_eye_mask_strike_through
 string path_password_eye_mask_visible
 string path_password_strike_through
 string profile
+string profile_image
 string project_id
 string prompt_email
 string prompt_password
@@ -4475,10 +4473,15 @@ string searchview_navigation_content_description
 string security
 string side_sheet_accessibility_pane_title
 string side_sheet_behavior
+string sign_out
 string sos
 string sos_description
 string status_bar_notification_info_overflow
 string title_activity_login
+string update_name
+string update_password
+string update_phone_number
+string update_security_pin
 string welcome
 string welcome_login
 style ActionButtonAppearance
@@ -5237,6 +5240,8 @@ style ThemeOverlay_MaterialComponents_TimePicker_Display_TextInputEditText
 style ThemeOverlay_MaterialComponents_Toolbar_Popup_Primary
 style ThemeOverlay_MaterialComponents_Toolbar_Primary
 style ThemeOverlay_MaterialComponents_Toolbar_Surface
+style WhiteBackgroundDialogTheme
+style WhiteBackgroundTheme
 style Widget_AppCompat_ActionBar
 style Widget_AppCompat_ActionBar_Solid
 style Widget_AppCompat_ActionBar_TabBar
